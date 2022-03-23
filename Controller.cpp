@@ -1,6 +1,5 @@
 #include "Controller.h"
 
-
 using namespace std;
 
 Controller::Controller() {
@@ -9,7 +8,7 @@ Controller::Controller() {
 	
 	if (!(cliente->connect("127.0.0.1", 1883, "user", "vdivEMMN3SQWX2Ez"))) 
 	{
-		cout << "No se logró establecer conexión" << endl;
+		cout << "No se logro establecer conexion" << endl;
 	}
 	for (int i = 1; i < 5; i++)
 	{
@@ -28,8 +27,9 @@ void Controller::updateController() {
 	for (int i = 0; i < mensajes.size(); i++)
 	{
 		// Imprimir en una tabla todos los valores //cout << mensajes[i].topic << endl; //vector char a float
+		cout << mensajes[i].topic << " " << payload2float(mensajes[i].payload) << endl;
 	}
-
+/*
 	if (IsKeyDown(KEY_UP))
 	{
 		if (IsKeyDown(KEY_RIGHT))
@@ -78,7 +78,28 @@ void Controller::moveForward() {
 		//cliente->publish("robot1/motor" + to_string(i) + "/current/set", );//float a vector char
 	}
 }
+*/
 
 Controller::~Controller() {
 	cliente->disconnect();
+}
+
+float payload2float (std::vector<char> payload){
+
+	//https://stackoverflow.com/questions/6417438/c-convert-vectorchar-to-double
+
+	float convert = 0.0;
+	assert(payload.size() == sizeof (float));
+	memcpy (&convert, payload, sizeof(float));
+	return convert;
+
+}
+
+std::vector<char> float2payload (float payload){
+
+	//https://stackoverflow.com/questions/52741039/how-to-convert-float-to-vectorunsigned-char-in-c
+
+	vector<char> convert(sizeof(float));
+	memcpy (convert.convert(), &payload, sizeof(float));
+	return convert;
 }

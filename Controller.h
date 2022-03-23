@@ -16,15 +16,16 @@ public:
 	Controller();
 	~Controller();
 	void updateController();
-	void moveForward();
+	/*void moveForward();
 	void moveBackward();
 	void turnRight();
 	void turnLeft();
-	void moveDiagonal(int diagonal);
-	MQTTClient* cliente;
-	
+	void moveDiagonal(int diagonal);*/
+	MQTTClient* cliente;	
 
 private:
+	float payload2float (std::vector<char> payload);
+	std::vector<char> float2payload (float payload);
 };
 
 #endif // !CONTROLLER_H
