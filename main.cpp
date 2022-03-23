@@ -8,9 +8,21 @@
  * Main module
  */
  
- #include "MQTTClient.h"
+#include "Controller.h"
+#include "raylib.h"
+
 
 int main(){
-    
+
+	const int screenWidth = 500;
+	const int screenHeight = 270;
+	
+	InitWindow(screenWidth, screenHeight, "EDA PARK");
+	
+    Controller controlador;
+	while (controlador.cliente->isConnected())
+	{
+		controlador.updateController();
+	}
     return 0;
 }
