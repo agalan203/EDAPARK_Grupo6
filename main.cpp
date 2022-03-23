@@ -17,10 +17,10 @@ int main(){
 	const int screenWidth = 500;
 	const int screenHeight = 270;
 	
-	InitWindow(screenWidth, screenHeight, "EDA PARK");
+	InitWindow (screenWidth, screenHeight, "EDA PARK");
 	
     Controller controlador;
-	while (true)
+	while (!WindowShouldClose())
 	{
 		BeginDrawing();
 		ClearBackground(BLACK);
@@ -28,5 +28,6 @@ int main(){
 		EndDrawing();
 	}
 	CloseWindow();
+	
     return 0;
 }

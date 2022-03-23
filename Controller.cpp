@@ -21,6 +21,12 @@ Controller::Controller() {
 }
 
 Controller::~Controller() {
+	for (int i = 1; i < 5; i++)
+	{
+		cliente->unsubscribe("robot1/motor"+to_string(i)+"/voltage");
+		cliente->unsubscribe("robot1/motor" + to_string(i) + "/current");
+		cliente->unsubscribe("robot1/motor" + to_string(i) + "/temperature");
+	}
 	cliente->disconnect();
 }
 
@@ -29,7 +35,6 @@ float Controller::getFloatFromArray(std::vector<char> payload) {
 	//https://stackoverflow.com/questions/6417438/c-convert-vectorchar-to-double
 
 	float convert = 0.0;
-	//assert(payload.size() == sizeof (float));
 	memcpy(&convert, &payload, sizeof(float));
 	return convert;
 
