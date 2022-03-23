@@ -20,29 +20,71 @@ Controller::Controller() {
 	
 }
 
+Controller::~Controller() {
+	cliente->disconnect();
+}
+
+float Controller::getFloatFromArray(std::vector<char> payload) {
+
+	//https://stackoverflow.com/questions/6417438/c-convert-vectorchar-to-double
+
+	float convert = 0.0;
+	//assert(payload.size() == sizeof (float));
+	memcpy(&convert, &payload, sizeof(float));
+	return convert;
+
+}
+
+std::vector<char> Controller::getArrayFromFloat(float payload) {
+
+	//https://stackoverflow.com/questions/52741039/how-to-convert-float-to-vectorunsigned-char-in-c
+
+	vector<char> data;
+	memcpy(&data, &payload, sizeof(float));
+	return data;
+}
+
 void Controller::updateController() {
 
 	vector<MQTTMessage> mensajes = cliente->getMessages();
-
-	for (int i = 0; i < mensajes.size(); i++)
+	
+	/*for (int i = 0; i < mensajes.size(); i++)
 	{
 		// Imprimir en una tabla todos los valores //cout << mensajes[i].topic << endl; //vector char a float
-		cout << mensajes[i].topic << " " << payload2float(mensajes[i].payload) << endl;
+		cout << mensajes[i].topic << " " << getFloatFromArray(mensajes[i].payload) << endl;
+
 	}
-/*
+	cout << "sali del loop" << endl << endl << endl << endl;
+	
+	switch (GetKeyPressed())
+	{
+	case KEY_UP:
+		moveForward();
+		break;
+	case KEY_DOWN:
+		moveBackward();
+	case KEY_RIGHT:
+		turnRight();
+	case KEY_LEFT:
+		turnLeft();
+	default:
+		break;
+	}
+	*/
 	if (IsKeyDown(KEY_UP))
 	{
 		if (IsKeyDown(KEY_RIGHT))
 		{
-			Controller::moveDiagonal(DIAGONAL_CUAD1);
+			moveDiagonal(DIAGONAL_CUAD1);
 		}
 		else if (IsKeyDown(KEY_LEFT))
 		{
-			Controller::moveDiagonal(DIAGONAL_CUAD2);
+			moveDiagonal(DIAGONAL_CUAD2);
 		}
 		else
 		{
-			Controller::moveForward();
+			cout << "lei la tecla up" << endl << endl << endl;
+			moveForward();
 		}
 		
 	}
@@ -50,56 +92,108 @@ void Controller::updateController() {
 	{
 		if (IsKeyDown(KEY_RIGHT))
 		{
-			Controller::moveDiagonal(DIAGONAL_CUAD4);
+			moveDiagonal(DIAGONAL_CUAD4);
 		}
 		else if (IsKeyDown(KEY_LEFT))
 		{
-			Controller::moveDiagonal(DIAGONAL_CUAD3);
+			moveDiagonal(DIAGONAL_CUAD3);
 		}
 		else
 		{
-			Controller::moveBackward();
+			moveBackward();
 		}
 
 	}
 	else if (IsKeyDown(KEY_RIGHT))
 	{
-		Controller::turnRight();
+		turnRight();
 	}
 	else if (IsKeyDown(KEY_LEFT))
 	{
-		Controller::turnLeft();
+		turnLeft();
 	}
 }
 
 void Controller::moveForward() {
-	for (int i = 1; i < 5; i++)
+	motoresHorario(1,3);
+	motoresAntiHorario(2, 4);
+}
+
+void Controller::moveBackward() {
+	motoresHorario(2, 4);
+	motoresAntiHorario(1, 3);
+}
+
+void Controller::turnRight() {
+	motoresHorario(1, 2, 3, 4);
+}
+
+void Controller::turnLeft(){
+	motoresAntiHorario(1, 2, 3, 4);
+}
+
+void Controller::moveDiagonal(int opcion) {
+	switch (opcion)
 	{
-		//cliente->publish("robot1/motor" + to_string(i) + "/current/set", );//float a vector char
+	case DIAGONAL_CUAD1:
+		motoresAntiHorario(2, 4);
+		motoresDetenidos(1, 3);
+		break;
+	case DIAGONAL_CUAD2:
+		motoresAntiHorario(1, 3);
+		motoresDetenidos(2, 4);
+		break;
+	case DIAGONAL_CUAD3:
+		motoresHorario(2, 4);
+		motoresDetenidos(1, 3);
+		break;
+	case DIAGONAL_CUAD4:
+		motoresHorario(1, 3);
+		motoresDetenidos(2, 4);
+		break;
+	default:
+		break;
 	}
 }
-*/
 
-Controller::~Controller() {
-	cliente->disconnect();
+void Controller::motoresHorario(int n1, int n2) {
+
+	//publish Amper + para n1 y n2 EL ERROR ESTA EN PUBLISH
+	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", getArrayFromFloat(5.0F));
+	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", getArrayFromFloat(5.0F));
+}
+void Controller::motoresAntiHorario(int n1, int n2) {
+	//publish Amper - para n1 y n2
+	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", getArrayFromFloat(-5.0F));
+	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", getArrayFromFloat(-5.0F));
 }
 
-float payload2float (std::vector<char> payload){
+void Controller::motoresHorario(int n1, int n2, int n3, int n4) {
 
-	//https://stackoverflow.com/questions/6417438/c-convert-vectorchar-to-double
-
-	float convert = 0.0;
-	assert(payload.size() == sizeof (float));
-	memcpy (&convert, payload, sizeof(float));
-	return convert;
-
+	//publish Amper + para n1, n2, n3, n4
+	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", getArrayFromFloat(5.0F));
+	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", getArrayFromFloat(5.0F));
+	cliente->publish("robot1/motor" + to_string(n3) + "/current/set", getArrayFromFloat(5.0F));
+	cliente->publish("robot1/motor" + to_string(n4) + "/current/set", getArrayFromFloat(5.0F));
+}
+void Controller::motoresAntiHorario(int n1, int n2, int n3, int n4) {
+	//publish Amper - para n1, n2, n3, n4
+	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", getArrayFromFloat(-5.0F));
+	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", getArrayFromFloat(-5.0F));
+	cliente->publish("robot1/motor" + to_string(n3) + "/current/set", getArrayFromFloat(-5.0F));
+	cliente->publish("robot1/motor" + to_string(n4) + "/current/set", getArrayFromFloat(-5.0F));
 }
 
-std::vector<char> float2payload (float payload){
+void Controller::motoresDetenidos(int n1, int n2) {
+	if (cliente->publish("robot1/motor" + to_string(n1) + "/current/set", getArrayFromFloat(0.0F))) {
+		cout << "funciono" << endl;
+	}
+	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", getArrayFromFloat(0.0F));
+}
 
-	//https://stackoverflow.com/questions/52741039/how-to-convert-float-to-vectorunsigned-char-in-c
-
-	vector<char> convert(sizeof(float));
-	memcpy (convert.convert(), &payload, sizeof(float));
-	return convert;
+void Controller::motoresDetenidos(int n1, int n2, int n3, int n4) {
+	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", getArrayFromFloat(0.0F));
+	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", getArrayFromFloat(0.0F));
+	cliente->publish("robot1/motor" + to_string(n3) + "/current/set", getArrayFromFloat(0.0F));
+	cliente->publish("robot1/motor" + to_string(n4) + "/current/set", getArrayFromFloat(0.0F));
 }

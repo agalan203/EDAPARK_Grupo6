@@ -20,9 +20,13 @@ int main(){
 	InitWindow(screenWidth, screenHeight, "EDA PARK");
 	
     Controller controlador;
-	while (controlador.cliente->isConnected())
+	while (true)
 	{
+		BeginDrawing();
+		ClearBackground(BLACK);
 		controlador.updateController();
+		EndDrawing();
 	}
+	CloseWindow();
     return 0;
 }
