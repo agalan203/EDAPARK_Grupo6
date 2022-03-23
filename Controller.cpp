@@ -39,8 +39,8 @@ std::vector<char> Controller::getArrayFromFloat(float payload) {
 
 	//https://stackoverflow.com/questions/52741039/how-to-convert-float-to-vectorunsigned-char-in-c
 
-	vector<char> data;
-	memcpy(&data, &payload, sizeof(float));
+	vector<char> data(sizeof(float));
+	memcpy(data.data(), &payload, sizeof(float));
 	return data;
 }
 
@@ -158,42 +158,48 @@ void Controller::moveDiagonal(int opcion) {
 
 void Controller::motoresHorario(int n1, int n2) {
 
+	vector<char> i = getArrayFromFloat(5.0F);
 	//publish Amper + para n1 y n2 EL ERROR ESTA EN PUBLISH
-	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", getArrayFromFloat(5.0F));
-	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", getArrayFromFloat(5.0F));
+	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
+	cliente->publish("robot1/motor" + to_string(n2) + "/current/set",i);
 }
 void Controller::motoresAntiHorario(int n1, int n2) {
+	vector<char> i = getArrayFromFloat(-5.0F);
 	//publish Amper - para n1 y n2
-	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", getArrayFromFloat(-5.0F));
-	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", getArrayFromFloat(-5.0F));
+	cliente->publish("robot1/motor" + to_string(n1) + "/current/set",i);
+	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", i);
 }
 
 void Controller::motoresHorario(int n1, int n2, int n3, int n4) {
 
+	vector<char> i = getArrayFromFloat(5.0F);
 	//publish Amper + para n1, n2, n3, n4
-	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", getArrayFromFloat(5.0F));
-	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", getArrayFromFloat(5.0F));
-	cliente->publish("robot1/motor" + to_string(n3) + "/current/set", getArrayFromFloat(5.0F));
-	cliente->publish("robot1/motor" + to_string(n4) + "/current/set", getArrayFromFloat(5.0F));
+	cliente->publish("robot1/motor1/current/set", i);
+	cliente->publish("robot1/motor2/current/set", i);
+	cliente->publish("robot1/motor" + to_string(n3) + "/current/set", i);
+	cliente->publish("robot1/motor" + to_string(n4) + "/current/set", i);
 }
 void Controller::motoresAntiHorario(int n1, int n2, int n3, int n4) {
+	
+	vector<char> i = getArrayFromFloat(-5.0F);
 	//publish Amper - para n1, n2, n3, n4
-	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", getArrayFromFloat(-5.0F));
-	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", getArrayFromFloat(-5.0F));
-	cliente->publish("robot1/motor" + to_string(n3) + "/current/set", getArrayFromFloat(-5.0F));
-	cliente->publish("robot1/motor" + to_string(n4) + "/current/set", getArrayFromFloat(-5.0F));
+	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
+	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", i);
+	cliente->publish("robot1/motor" + to_string(n3) + "/current/set", i);
+	cliente->publish("robot1/motor" + to_string(n4) + "/current/set", i);
 }
 
 void Controller::motoresDetenidos(int n1, int n2) {
-	if (cliente->publish("robot1/motor" + to_string(n1) + "/current/set", getArrayFromFloat(0.0F))) {
-		cout << "funciono" << endl;
-	}
-	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", getArrayFromFloat(0.0F));
+	vector<char> i = getArrayFromFloat(0.0F);
+	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
+	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", i);
 }
 
 void Controller::motoresDetenidos(int n1, int n2, int n3, int n4) {
-	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", getArrayFromFloat(0.0F));
-	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", getArrayFromFloat(0.0F));
-	cliente->publish("robot1/motor" + to_string(n3) + "/current/set", getArrayFromFloat(0.0F));
-	cliente->publish("robot1/motor" + to_string(n4) + "/current/set", getArrayFromFloat(0.0F));
+	
+	vector<char> i = getArrayFromFloat(0.0F);
+	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
+	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", i);
+	cliente->publish("robot1/motor" + to_string(n3) + "/current/set", i);
+	cliente->publish("robot1/motor" + to_string(n4) + "/current/set", i);
 }
