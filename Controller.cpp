@@ -61,45 +61,35 @@ void Controller::updateController() {
 
 	if (IsKeyDown(KEY_UP))
 	{
-		if (IsKeyDown(KEY_RIGHT))
-		{
-			moveDiagonal(DIAGONAL_CUAD1);
-		}
-		else if (IsKeyDown(KEY_LEFT))
-		{
-			moveDiagonal(DIAGONAL_CUAD2);
-		}
-		else
-		{
-			moveForward();
-		}	
+		moveForward();	
 	}
-	else if (IsKeyDown(KEY_DOWN))
+	if (IsKeyReleased(KEY_UP))
 	{
-		if (IsKeyDown(KEY_RIGHT))
-		{
-			moveDiagonal(DIAGONAL_CUAD4);
-		}
-		else if (IsKeyDown(KEY_LEFT))
-		{
-			moveDiagonal(DIAGONAL_CUAD3);
-		}
-		else
-		{
-			moveBackward();
-		}
+		actualizarMotor(1, 2, STOP_CURRENT);
 	}
-	else if (IsKeyDown(KEY_RIGHT))
+	if (IsKeyDown(KEY_DOWN))
+	{
+		moveBackward();
+	}
+	if (IsKeyReleased(KEY_DOWN))
+	{
+		actualizarMotor(3, 4, STOP_CURRENT);
+	}
+	if (IsKeyDown(KEY_RIGHT))
 	{
 		turnRight();
 	}
-	else if (IsKeyDown(KEY_LEFT))
+	if (IsKeyReleased(KEY_RIGHT))
+	{
+		actualizarMotor(1, 2, STOP_CURRENT);
+	}
+	if (IsKeyDown(KEY_LEFT))
 	{
 		turnLeft();
 	}
-	else if (IsKeyUp(KEY_RIGHT)&& IsKeyUp(KEY_LEFT)&& IsKeyUp(KEY_UP)&& IsKeyUp(KEY_DOWN))
+	if (IsKeyReleased(KEY_LEFT))
 	{
-		actualizarMotor(1, 2, 3, 4, STOP_CURRENT);
+		actualizarMotor(1, 2, STOP_CURRENT);
 	}
 }	
 
@@ -122,34 +112,6 @@ void Controller::turnRight() {
 void Controller::turnLeft(){
 	actualizarMotor(1, 2, TURN_CURRENT);
 
-}
-
-void Controller::moveDiagonal(int opcion) {
-	switch (opcion)
-	{
-	case DIAGONAL_CUAD1:
-		actualizarMotor(2, -MOVE_CURRENT);
-		actualizarMotor(4, MOVE_CURRENT);
-		actualizarMotor(1, 3, STOP_CURRENT);
-		break;
-	case DIAGONAL_CUAD2:
-		actualizarMotor(3, -MOVE_CURRENT);
-		actualizarMotor(1, MOVE_CURRENT);
-		actualizarMotor(2, 4, STOP_CURRENT);
-		break;
-	case DIAGONAL_CUAD3:
-		actualizarMotor(4, -MOVE_CURRENT);
-		actualizarMotor(2, MOVE_CURRENT);
-		actualizarMotor(1, 3, STOP_CURRENT);
-		break;
-	case DIAGONAL_CUAD4:
-		actualizarMotor(1, -MOVE_CURRENT);
-		actualizarMotor(3, MOVE_CURRENT);
-		actualizarMotor(2, 4, STOP_CURRENT);
-		break;
-	default:
-		break;
-	}
 }
 
 void Controller::actualizarMotor (int n1, float current){
