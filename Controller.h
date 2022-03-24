@@ -7,7 +7,7 @@
 #include <string.h>
 #include <vector>
 
-#define MOVE_CURRENT 5.0F
+#define MOVE_CURRENT 8.0F
 #define STOP_CURRENT 0.0F
 #define TURN_CURRENT 1.0F
 
@@ -30,6 +30,7 @@ private:
 	void actualizarMotor (int n1, float current);
 	void actualizarMotor (int n1, int n2, float current);
 	void actualizarMotor (int n1, int n2, int n3, int n4, float current);
+	void frenarMotor (void);
 
 	float getFloatFromArray (std::vector<char> payload);
 	std::vector<char> getArrayFromFloat(float payload);

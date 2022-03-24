@@ -65,7 +65,7 @@ void Controller::updateController() {
 	}
 	if (IsKeyReleased(KEY_UP))
 	{
-		actualizarMotor(1, 2, STOP_CURRENT);
+		frenarMotor();
 	}
 	if (IsKeyDown(KEY_DOWN))
 	{
@@ -73,7 +73,7 @@ void Controller::updateController() {
 	}
 	if (IsKeyReleased(KEY_DOWN))
 	{
-		actualizarMotor(3, 4, STOP_CURRENT);
+		frenarMotor();
 	}
 	if (IsKeyDown(KEY_RIGHT))
 	{
@@ -81,7 +81,7 @@ void Controller::updateController() {
 	}
 	if (IsKeyReleased(KEY_RIGHT))
 	{
-		actualizarMotor(1, 2, STOP_CURRENT);
+		frenarMotor();
 	}
 	if (IsKeyDown(KEY_LEFT))
 	{
@@ -89,7 +89,7 @@ void Controller::updateController() {
 	}
 	if (IsKeyReleased(KEY_LEFT))
 	{
-		actualizarMotor(1, 2, STOP_CURRENT);
+		frenarMotor();
 	}
 }	
 
@@ -137,4 +137,13 @@ void Controller::actualizarMotor (int n1, int n2, int n3, int n4, float current)
 	cliente->publish("robot1/motor" + to_string(n3) + "/current/set", i);
 	cliente->publish("robot1/motor" + to_string(n4) + "/current/set", i);
 
+}
+
+void Controller::frenarMotor(){
+
+	vector<char> i = getArrayFromFloat(STOP_CURRENT);
+	cliente->publish("robot1/motor" + to_string(1) + "/current/set", i);
+	cliente->publish("robot1/motor" + to_string(2) + "/current/set", i);
+	cliente->publish("robot1/motor" + to_string(3) + "/current/set", i);
+	cliente->publish("robot1/motor" + to_string(4) + "/current/set", i);
 }
