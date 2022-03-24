@@ -15,9 +15,7 @@ Controller::Controller() {
 		cliente->subscribe("robot1/motor"+to_string(i)+"/voltage");
 		cliente->subscribe("robot1/motor" + to_string(i) + "/current");
 		cliente->subscribe("robot1/motor" + to_string(i) + "/temperature");
-	}
-	
-	
+	}	
 }
 
 Controller::~Controller() {
@@ -53,37 +51,16 @@ void Controller::updateController() {
 
 	vector<MQTTMessage> mensajes = cliente->getMessages();
 	
-	/*for (int i = 0; i < mensajes.size(); i++)
+	for (int i = 0; i < mensajes.size(); i++)
 	{
-		char* msj = const_cast<char*>(mensajes[i].topic.c_str());
-		DrawText(msj,0,i*14,14,WHITE);
+		//cout << mensajes[i].topic << endl;
+		//char* msj = const_cast<char*>(mensajes[i].topic.c_str());
+		//DrawText(msj,0,i*14,14,WHITE);
 		//falta la parte del value y funciona raro
-	}*/
-	//cout << "sali del loop" << endl << endl << endl << endl;
-	/*
-	switch (GetKeyPressed())
-	{
-	case KEY_UP:
-		moveForward();
-		break;
-	case KEY_DOWN:
-		moveBackward();
-		break;
-	case KEY_RIGHT:
-		turnRight();
-		break;
-	case KEY_LEFT:
-		turnLeft();
-		break;
-	default:
-		break;
 	}
-	*/
 
 	if (IsKeyDown(KEY_UP))
 	{
-		cout << "lei la tecla up" << endl << endl << endl;
-
 		if (IsKeyDown(KEY_RIGHT))
 		{
 			moveDiagonal(DIAGONAL_CUAD1);
@@ -94,10 +71,8 @@ void Controller::updateController() {
 		}
 		else
 		{
-			cout << "lei la tecla up" << endl << endl << endl;
 			moveForward();
-		}
-		
+		}	
 	}
 	else if (IsKeyDown(KEY_DOWN))
 	{
@@ -113,7 +88,6 @@ void Controller::updateController() {
 		{
 			moveBackward();
 		}
-
 	}
 	else if (IsKeyDown(KEY_RIGHT))
 	{
@@ -123,106 +97,82 @@ void Controller::updateController() {
 	{
 		turnLeft();
 	}
+	else if (IsKeyUp(KEY_RIGHT)&& IsKeyUp(KEY_LEFT)&& IsKeyUp(KEY_UP)&& IsKeyUp(KEY_DOWN))
+	{
+		actualizarMotor(1, 2, 3, 4, STOP_CURRENT);
+	}
 }	
 
 void Controller::moveForward() {
-	motoresHorario(1);
-	motoresAntiHorario(2);
-	motoresDetenidos(3, 4);
+	actualizarMotor(1, MOVE_CURRENT);
+	actualizarMotor(2, -MOVE_CURRENT);
+	actualizarMotor(3, 4, STOP_CURRENT);
 }
 
 void Controller::moveBackward() {
-	motoresHorario(2);
-	motoresAntiHorario(1);
-	motoresDetenidos(3, 4);
+	actualizarMotor(3, MOVE_CURRENT);
+	actualizarMotor(4, -MOVE_CURRENT);
+	actualizarMotor(1, 2, STOP_CURRENT);
 }
 
 void Controller::turnRight() {
-	motoresHorario(1, 2, 3, 4);
+	actualizarMotor(1, 2, -TURN_CURRENT);
 }
 
 void Controller::turnLeft(){
-	motoresAntiHorario(1, 2, 3, 4);
+	actualizarMotor(1, 2, TURN_CURRENT);
+
 }
 
 void Controller::moveDiagonal(int opcion) {
 	switch (opcion)
 	{
 	case DIAGONAL_CUAD1:
-		motoresAntiHorario(2, 4);
-		motoresDetenidos(1, 3);
+		actualizarMotor(2, -MOVE_CURRENT);
+		actualizarMotor(4, MOVE_CURRENT);
+		actualizarMotor(1, 3, STOP_CURRENT);
 		break;
 	case DIAGONAL_CUAD2:
-		motoresAntiHorario(1, 3);
-		motoresDetenidos(2, 4);
+		actualizarMotor(3, -MOVE_CURRENT);
+		actualizarMotor(1, MOVE_CURRENT);
+		actualizarMotor(2, 4, STOP_CURRENT);
 		break;
 	case DIAGONAL_CUAD3:
-		motoresHorario(2, 4);
-		motoresDetenidos(1, 3);
+		actualizarMotor(4, -MOVE_CURRENT);
+		actualizarMotor(2, MOVE_CURRENT);
+		actualizarMotor(1, 3, STOP_CURRENT);
 		break;
 	case DIAGONAL_CUAD4:
-		motoresHorario(1, 3);
-		motoresDetenidos(2, 4);
+		actualizarMotor(1, -MOVE_CURRENT);
+		actualizarMotor(3, MOVE_CURRENT);
+		actualizarMotor(2, 4, STOP_CURRENT);
 		break;
 	default:
 		break;
 	}
 }
 
-void Controller::motoresHorario(int n1) {
+void Controller::actualizarMotor (int n1, float current){
 
-	vector<char> i = getArrayFromFloat(5.0F);
+	vector<char> i = getArrayFromFloat(current);
 	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
+
 }
 
-void Controller::motoresHorario(int n1, int n2) {
+void Controller::actualizarMotor (int n1, int n2, float current){
 
-	vector<char> i = getArrayFromFloat(5.0F);
+	vector<char> i = getArrayFromFloat(current);
 	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
 	cliente->publish("robot1/motor" + to_string(n2) + "/current/set",i);
-}
-void Controller::motoresAntiHorario(int n1, int n2) {
 
-	vector<char> i = getArrayFromFloat(-5.0F);
-	cliente->publish("robot1/motor" + to_string(n1) + "/current/set",i);
-	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", i);
 }
 
-void Controller::motoresAntiHorario(int n1) {
+void Controller::actualizarMotor (int n1, int n2, int n3, int n4, float current){
 
-	vector<char> i = getArrayFromFloat(-5.0F);
-	cliente->publish("robot1/motor" + to_string(n1) + "/current/set",i);
-}
-
-void Controller::motoresHorario(int n1, int n2, int n3, int n4) {
-
-	vector<char> i = getArrayFromFloat(5.0F);
-	cliente->publish("robot1/motor1/current/set", i);
-	cliente->publish("robot1/motor2/current/set", i);
-	cliente->publish("robot1/motor" + to_string(n3) + "/current/set", i);
-	cliente->publish("robot1/motor" + to_string(n4) + "/current/set", i);
-}
-void Controller::motoresAntiHorario(int n1, int n2, int n3, int n4) {
-	
-	vector<char> i = getArrayFromFloat(-5.0F);
+	vector<char> i = getArrayFromFloat(current);
 	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
 	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", i);
 	cliente->publish("robot1/motor" + to_string(n3) + "/current/set", i);
 	cliente->publish("robot1/motor" + to_string(n4) + "/current/set", i);
-}
 
-void Controller::motoresDetenidos(int n1, int n2) {
-
-	vector<char> i = getArrayFromFloat(0.0F);
-	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
-	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", i);
-}
-
-void Controller::motoresDetenidos(int n1, int n2, int n3, int n4) {
-	
-	vector<char> i = getArrayFromFloat(0.0F);
-	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
-	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", i);
-	cliente->publish("robot1/motor" + to_string(n3) + "/current/set", i);
-	cliente->publish("robot1/motor" + to_string(n4) + "/current/set", i);
 }

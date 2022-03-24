@@ -11,6 +11,9 @@
 #define DIAGONAL_CUAD2 2
 #define DIAGONAL_CUAD3 3
 #define DIAGONAL_CUAD4 4
+#define MOVE_CURRENT 5.0F
+#define STOP_CURRENT 0.0F
+#define TURN_CURRENT 1.0F
 
 class Controller
 {
@@ -26,14 +29,10 @@ public:
 	MQTTClient* cliente;	
 
 private:
-	void motoresHorario(int n1);
-	void motoresHorario(int n1, int n2);
-	void motoresHorario(int n1, int n2,int n3, int n4);
-	void motoresAntiHorario(int n1);
-	void motoresAntiHorario(int n1, int n2);
-	void motoresAntiHorario(int n1, int n2m, int n3, int n4);
-	void motoresDetenidos(int n1, int n2);
-	void motoresDetenidos(int n1, int n2, int n3, int n4);
+
+	void actualizarMotor (int n1, float current);
+	void actualizarMotor (int n1, int n2, float current);
+	void actualizarMotor (int n1, int n2, int n3, int n4, float current);
 
 	float getFloatFromArray (std::vector<char> payload);
 	std::vector<char> getArrayFromFloat(float payload);
