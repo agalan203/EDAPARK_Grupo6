@@ -55,12 +55,12 @@ void Controller::updateController() {
 	
 	/*for (int i = 0; i < mensajes.size(); i++)
 	{
-		// Imprimir en una tabla todos los valores //cout << mensajes[i].topic << endl; //vector char a float
-		cout << mensajes[i].topic << " " << getFloatFromArray(mensajes[i].payload) << endl;
-
-	}
-	cout << "sali del loop" << endl << endl << endl << endl;
-	
+		char* msj = const_cast<char*>(mensajes[i].topic.c_str());
+		DrawText(msj,0,i*14,14,WHITE);
+		//falta la parte del value y funciona raro
+	}*/
+	//cout << "sali del loop" << endl << endl << endl << endl;
+	/*
 	switch (GetKeyPressed())
 	{
 	case KEY_UP:
@@ -68,16 +68,22 @@ void Controller::updateController() {
 		break;
 	case KEY_DOWN:
 		moveBackward();
+		break;
 	case KEY_RIGHT:
 		turnRight();
+		break;
 	case KEY_LEFT:
 		turnLeft();
+		break;
 	default:
 		break;
 	}
 	*/
+
 	if (IsKeyDown(KEY_UP))
 	{
+		cout << "lei la tecla up" << endl << endl << endl;
+
 		if (IsKeyDown(KEY_RIGHT))
 		{
 			moveDiagonal(DIAGONAL_CUAD1);
@@ -117,16 +123,18 @@ void Controller::updateController() {
 	{
 		turnLeft();
 	}
-}
+}	
 
 void Controller::moveForward() {
-	motoresHorario(1,3);
-	motoresAntiHorario(2, 4);
+	motoresHorario(1);
+	motoresAntiHorario(2);
+	motoresDetenidos(3, 4);
 }
 
 void Controller::moveBackward() {
-	motoresHorario(2, 4);
-	motoresAntiHorario(1, 3);
+	motoresHorario(2);
+	motoresAntiHorario(1);
+	motoresDetenidos(3, 4);
 }
 
 void Controller::turnRight() {
@@ -161,24 +169,34 @@ void Controller::moveDiagonal(int opcion) {
 	}
 }
 
+void Controller::motoresHorario(int n1) {
+
+	vector<char> i = getArrayFromFloat(5.0F);
+	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
+}
+
 void Controller::motoresHorario(int n1, int n2) {
 
 	vector<char> i = getArrayFromFloat(5.0F);
-	//publish Amper + para n1 y n2 EL ERROR ESTA EN PUBLISH
 	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
 	cliente->publish("robot1/motor" + to_string(n2) + "/current/set",i);
 }
 void Controller::motoresAntiHorario(int n1, int n2) {
+
 	vector<char> i = getArrayFromFloat(-5.0F);
-	//publish Amper - para n1 y n2
 	cliente->publish("robot1/motor" + to_string(n1) + "/current/set",i);
 	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", i);
+}
+
+void Controller::motoresAntiHorario(int n1) {
+
+	vector<char> i = getArrayFromFloat(-5.0F);
+	cliente->publish("robot1/motor" + to_string(n1) + "/current/set",i);
 }
 
 void Controller::motoresHorario(int n1, int n2, int n3, int n4) {
 
 	vector<char> i = getArrayFromFloat(5.0F);
-	//publish Amper + para n1, n2, n3, n4
 	cliente->publish("robot1/motor1/current/set", i);
 	cliente->publish("robot1/motor2/current/set", i);
 	cliente->publish("robot1/motor" + to_string(n3) + "/current/set", i);
@@ -187,7 +205,6 @@ void Controller::motoresHorario(int n1, int n2, int n3, int n4) {
 void Controller::motoresAntiHorario(int n1, int n2, int n3, int n4) {
 	
 	vector<char> i = getArrayFromFloat(-5.0F);
-	//publish Amper - para n1, n2, n3, n4
 	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
 	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", i);
 	cliente->publish("robot1/motor" + to_string(n3) + "/current/set", i);
@@ -195,6 +212,7 @@ void Controller::motoresAntiHorario(int n1, int n2, int n3, int n4) {
 }
 
 void Controller::motoresDetenidos(int n1, int n2) {
+
 	vector<char> i = getArrayFromFloat(0.0F);
 	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
 	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", i);

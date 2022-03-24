@@ -20,6 +20,7 @@ int main(){
 	InitWindow (screenWidth, screenHeight, "EDA PARK");
 	
     Controller controlador;
+
 	while (!WindowShouldClose())
 	{
 		BeginDrawing();

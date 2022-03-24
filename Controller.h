@@ -26,9 +26,10 @@ public:
 	MQTTClient* cliente;	
 
 private:
-	
+	void motoresHorario(int n1);
 	void motoresHorario(int n1, int n2);
 	void motoresHorario(int n1, int n2,int n3, int n4);
+	void motoresAntiHorario(int n1);
 	void motoresAntiHorario(int n1, int n2);
 	void motoresAntiHorario(int n1, int n2m, int n3, int n4);
 	void motoresDetenidos(int n1, int n2);
