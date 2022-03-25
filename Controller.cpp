@@ -24,10 +24,12 @@ Controller::Controller() {
 	}
 	for (int i = 1; i < 5; i++)
 	{
-		cliente->subscribe("robot1/motor"+to_string(i)+"/voltage");
+		cliente->subscribe("robot1/motor" + to_string(i) + "/voltage");
 		cliente->subscribe("robot1/motor" + to_string(i) + "/current");
 		cliente->subscribe("robot1/motor" + to_string(i) + "/temperature");
 	}
+
+	bool isLEDOn = false;
 }
 
 /*
@@ -36,7 +38,7 @@ Controller::Controller() {
 Controller::~Controller() {
 	for (int i = 1; i < 5; i++)
 	{
-		cliente->unsubscribe("robot1/motor"+to_string(i)+"/voltage");
+		cliente->unsubscribe("robot1/motor" + to_string(i) + "/voltage");
 		cliente->unsubscribe("robot1/motor" + to_string(i) + "/current");
 		cliente->unsubscribe("robot1/motor" + to_string(i) + "/temperature");
 	}
@@ -79,14 +81,14 @@ void Controller::updateController() {
 		string floatpayload = to_string(getFloatFromArray(mensajes[i].payload));
 		char* msjpayload = (char*)(floatpayload.c_str());
 
-		DrawText(msj, 0, i*14, 14, WHITE);
-		DrawText(msjpayload, 250, i*14, 14, WHITE);
+		DrawText("ROBOT1 CONTROL PANEL", 0, 0, 24, RED);
+		DrawText(msj, 0, 30 + i*14, 14, WHITE);
+		DrawText(msjpayload, 250, 30 + i*14, 14, WHITE);
 	}
 	
-
 	if (IsKeyDown(KEY_UP))
 	{
-		moveForward();	
+		moveRobotfront(MOVE_CURRENT);	
 	}
 	if (IsKeyReleased(KEY_UP))
 	{
@@ -94,7 +96,7 @@ void Controller::updateController() {
 	}
 	if (IsKeyDown(KEY_DOWN))
 	{
-		moveBackward();
+		moveRobotfront(-MOVE_CURRENT);	
 	}
 	if (IsKeyReleased(KEY_DOWN))
 	{
@@ -102,7 +104,7 @@ void Controller::updateController() {
 	}
 	if (IsKeyDown(KEY_RIGHT))
 	{
-		turnRight();
+		moveRobotside(-TURN_CURRENT);
 	}
 	if (IsKeyReleased(KEY_RIGHT))
 	{
@@ -110,45 +112,40 @@ void Controller::updateController() {
 	}
 	if (IsKeyDown(KEY_LEFT))
 	{
-		turnLeft();
+		moveRobotside(TURN_CURRENT);
 	}
 	if (IsKeyReleased(KEY_LEFT))
 	{
 		frenarMotor();
 	}
+
+	double time = GetTime();
+	double period = time - (long)time;
+	bool shouldLEDBeOn = (period < 0.1);
+	if (isLEDOn != shouldLEDBeOn)
+	{
+		char redColor = shouldLEDBeOn ? 0xff : 0;
+		vector<char> i = {redColor, 0, 0};
+		cliente->publish("robot1/display/leftEye/set", i);
+		cliente->publish("robot1/display/rightEye/set", i);
+		isLEDOn = shouldLEDBeOn; 
+	}
 }	
 
 /*
-* Metodo que permite mover al robot hacia adelante
+* Metodo que permite girar el robot
 */
-void Controller::moveForward() {
-	actualizarMotor(1, MOVE_CURRENT);
-	actualizarMotor(2, -MOVE_CURRENT);
-	actualizarMotor(3, 4, STOP_CURRENT);
+void Controller::moveRobotfront(float current) {
+	actualizarMotor(1, 4, current);
+	actualizarMotor(2, 3, -current);
 }
 
 /*
-* Metodo que permite mover al robot hacia atras
+* Metodo que permite mover adelante-atras el robot
 */
-void Controller::moveBackward() {
-	actualizarMotor(3, MOVE_CURRENT);
-	actualizarMotor(4, -MOVE_CURRENT);
-	actualizarMotor(1, 2, STOP_CURRENT);
-}
-
-/*
-* Metodo que permite girar el robot hacia la derecha
-*/
-void Controller::turnRight() {
-	actualizarMotor(1, 2, -TURN_CURRENT);
-}
-
-/*
-* Metodo que permite girar al robot hacia la izquierda
-*/
-void Controller::turnLeft(){
-	actualizarMotor(1, 2, TURN_CURRENT);
-
+void Controller::moveRobotside(float current) {
+	actualizarMotor(1, 2, current);
+	actualizarMotor(3, 4, -current);
 }
 
 /*

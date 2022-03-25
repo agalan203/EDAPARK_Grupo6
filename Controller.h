@@ -17,9 +17,9 @@
 #include <string.h>
 #include <vector>
 
-#define MOVE_CURRENT 5.0F
+#define MOVE_CURRENT 6.0F
 #define STOP_CURRENT 0.0F
-#define TURN_CURRENT 1.0F
+#define TURN_CURRENT 0.5F
 
 /*
 * Clase que permite inicializar y controlar el robot
@@ -40,26 +40,21 @@ public:
 	* Metodo que actualiza el estado del robot e interpreta los comandos de control
 	*/
 	void updateController();
-	/*
-	* Metodo que permite mover al robot hacia adelante
-	*/
-	void moveForward();
-	/*
-	* Metodo que permite mover al robot hacia atras
-	*/
-	void moveBackward();
-	/*
-	* Metodo que permite girar el robot hacia la derecha
-	*/
-	void turnRight();
-	/*
-	* Metodo que permite girar al robot hacia la izquierda
-	*/
-	void turnLeft();
 
 	MQTTClient* cliente;	
-
+	
 private:
+
+	bool isLEDOn;
+
+	/*
+	* Metodo que permite mover el robot hacia los costados
+	*/
+	void moveRobotside(float current);
+	/*
+	* Metodo que permite mover adelante-atras el robot
+	*/
+	void moveRobotfront(float current);
 
 	/*
 	* Metodos que actualizan la corriente en los motores del robot

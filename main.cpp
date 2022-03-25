@@ -11,7 +11,6 @@
 #include "Controller.h"
 #include "raylib.h"
 
-
 int main(){
 
 	const int screenWidth = 350;
