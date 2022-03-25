@@ -22,6 +22,9 @@ Controller::Controller() {
 	{
 		cout << "No se logro establecer conexion" << endl;
 	}
+
+	// para utilizar un gamepad/joystick, aca pondria llamadas a IsGamepadAvailable(int gamepad) y GetGamepadName(int gamepad);   
+
 	for (int i = 1; i < 5; i++)
 	{
 		cliente->subscribe("robot1/motor" + to_string(i) + "/voltage");
@@ -86,35 +89,44 @@ void Controller::updateController() {
 		DrawText(msjpayload, 250, 30 + i*14, 14, WHITE);
 	}
 	
-	if (IsKeyDown(KEY_UP))
+	//para joystick usaria las funciones IsGamepadbuttondown en vez 
+	if (IsKeyDown(KEY_UP))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_LEFT_FACE_UP)
 	{
 		moveRobotfront(MOVE_CURRENT);	
 	}
-	if (IsKeyReleased(KEY_UP))
+	if (IsKeyReleased(KEY_UP))	//IsGamepadButtonUp(gamepad, GAMEPAD_BUTTON_LEFT_FACE_UP)
 	{
 		frenarMotor();
 	}
-	if (IsKeyDown(KEY_DOWN))
+	if (IsKeyDown(KEY_DOWN))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_LEFT_FACE_DOWN)
 	{
 		moveRobotfront(-MOVE_CURRENT);	
 	}
-	if (IsKeyReleased(KEY_DOWN))
+	if (IsKeyReleased(KEY_DOWN))	//IsGamepadButtonUp(gamepad, GAMEPAD_BUTTON_LEFT_FACE_DOWN)
 	{
 		frenarMotor();
 	}
-	if (IsKeyDown(KEY_RIGHT))
+	if (IsKeyDown(KEY_RIGHT))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)
 	{
 		moveRobotside(-TURN_CURRENT);
 	}
-	if (IsKeyReleased(KEY_RIGHT))
+	if (IsKeyReleased(KEY_RIGHT))	//IsGamepadButtonUp(gamepad, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)
 	{
 		frenarMotor();
 	}
-	if (IsKeyDown(KEY_LEFT))
+	if (IsKeyDown(KEY_LEFT))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_LEFT_FACE_LEFT)
 	{
 		moveRobotside(TURN_CURRENT);
 	}
-	if (IsKeyReleased(KEY_LEFT))
+	if (IsKeyReleased(KEY_LEFT))	//IsGamepadButtonUp(gamepad, GAMEPAD_BUTTON_LEFT_FACE_LEFT)
+	{
+		frenarMotor();
+	}
+	if (IsKeyDown(KEY_SPACE))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_RIGHT_TRIGGER_1)
+	{
+		turnRobot();
+	}
+	if (IsKeyReleased(KEY_SPACE))	//IsGamepadButtonUp(gamepad, GAMEPAD_BUTTON_RIGHT_TRIGGER_1)
 	{
 		frenarMotor();
 	}
@@ -146,6 +158,14 @@ void Controller::moveRobotfront(float current) {
 void Controller::moveRobotside(float current) {
 	actualizarMotor(1, 2, current);
 	actualizarMotor(3, 4, -current);
+}
+
+/*
+* Metodo que permite girar al robot
+*/
+void Controller::turnRobot(){
+	actualizarMotor(1, 2, -TURN_CURRENT);
+
 }
 
 /*

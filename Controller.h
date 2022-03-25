@@ -55,6 +55,10 @@ private:
 	* Metodo que permite mover adelante-atras el robot
 	*/
 	void moveRobotfront(float current);
+	/*
+	* Metodo que permite girar al robot
+	*/
+	void turnRobot(void);
 
 	/*
 	* Metodos que actualizan la corriente en los motores del robot
