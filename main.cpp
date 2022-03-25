@@ -14,12 +14,14 @@
 
 int main(){
 
-	const int screenWidth = 500;
-	const int screenHeight = 270;
+	const int screenWidth = 350;
+	const int screenHeight = 200;
 	
 	InitWindow (screenWidth, screenHeight, "EDA PARK");
 	
     Controller controlador;
+
+	SetTargetFPS(10);
 
 	while (!WindowShouldClose())
 	{

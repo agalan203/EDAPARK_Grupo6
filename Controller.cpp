@@ -1,7 +1,19 @@
+/*
+ * EDAPark
+ *
+ * 22.08 EDA
+ * TP 2
+ * Santiago Michelotti y Albertina Galan
+ *
+ * Clases y metodos para el control del robot
+ */
 #include "Controller.h"
 
 using namespace std;
 
+/*
+* Metodo que inicializa el robot
+*/
 Controller::Controller() {
 
 	cliente = new MQTTClient("controller");
@@ -15,9 +27,12 @@ Controller::Controller() {
 		cliente->subscribe("robot1/motor"+to_string(i)+"/voltage");
 		cliente->subscribe("robot1/motor" + to_string(i) + "/current");
 		cliente->subscribe("robot1/motor" + to_string(i) + "/temperature");
-	}	
+	}
 }
 
+/*
+* Metodo que libera los recursos empleados para controlar el robot
+*/
 Controller::~Controller() {
 	for (int i = 1; i < 5; i++)
 	{
@@ -28,36 +43,46 @@ Controller::~Controller() {
 	cliente->disconnect();
 }
 
+/*
+* Metodo que permite transformar un vector de char a un float
+* /https://stackoverflow.com/questions/6417438/c-convert-vectorchar-to-double
+*/
 float Controller::getFloatFromArray(std::vector<char> payload) {
 
-	//https://stackoverflow.com/questions/6417438/c-convert-vectorchar-to-double
-
 	float convert = 0.0;
-	memcpy(&convert, &payload, sizeof(float));
+	memcpy(&convert, &payload[0], std::min(payload.size(), sizeof(float)));
 	return convert;
 
 }
 
+/*
+* Metodo que permite transformar un float a un vector de char, el formato requerido para hacer publish
+* https://stackoverflow.com/questions/6417438/c-convert-vectorchar-to-double
+*/
 std::vector<char> Controller::getArrayFromFloat(float payload) {
-
-	//https://stackoverflow.com/questions/52741039/how-to-convert-float-to-vectorunsigned-char-in-c
 
 	vector<char> data(sizeof(float));
 	memcpy(data.data(), &payload, sizeof(float));
 	return data;
 }
 
+/*
+* Metodo que actualiza el estado del robot e interpreta los comandos de control
+*/
 void Controller::updateController() {
 
 	vector<MQTTMessage> mensajes = cliente->getMessages();
 	
 	for (int i = 0; i < mensajes.size(); i++)
 	{
-		//cout << mensajes[i].topic << endl;
-		//char* msj = const_cast<char*>(mensajes[i].topic.c_str());
-		//DrawText(msj,0,i*14,14,WHITE);
-		//falta la parte del value y funciona raro
+		char* msj = const_cast<char*>(mensajes[i].topic.c_str());
+		string floatpayload = to_string(getFloatFromArray(mensajes[i].payload));
+		char* msjpayload = (char*)(floatpayload.c_str());
+
+		DrawText(msj, 0, i*14, 14, WHITE);
+		DrawText(msjpayload, 250, i*14, 14, WHITE);
 	}
+	
 
 	if (IsKeyDown(KEY_UP))
 	{
@@ -93,27 +118,44 @@ void Controller::updateController() {
 	}
 }	
 
+/*
+* Metodo que permite mover al robot hacia adelante
+*/
 void Controller::moveForward() {
 	actualizarMotor(1, MOVE_CURRENT);
 	actualizarMotor(2, -MOVE_CURRENT);
 	actualizarMotor(3, 4, STOP_CURRENT);
 }
 
+/*
+* Metodo que permite mover al robot hacia atras
+*/
 void Controller::moveBackward() {
 	actualizarMotor(3, MOVE_CURRENT);
 	actualizarMotor(4, -MOVE_CURRENT);
 	actualizarMotor(1, 2, STOP_CURRENT);
 }
 
+/*
+* Metodo que permite girar el robot hacia la derecha
+*/
 void Controller::turnRight() {
 	actualizarMotor(1, 2, -TURN_CURRENT);
 }
 
+/*
+* Metodo que permite girar al robot hacia la izquierda
+*/
 void Controller::turnLeft(){
 	actualizarMotor(1, 2, TURN_CURRENT);
 
 }
 
+/*
+* Metodos que actualizan la corriente en los motores del robot
+* param n: el numero del motor a actualizar
+* param current: la corriente que se le quiere dar al motor
+*/
 void Controller::actualizarMotor (int n1, float current){
 
 	vector<char> i = getArrayFromFloat(current);
@@ -139,6 +181,9 @@ void Controller::actualizarMotor (int n1, int n2, int n3, int n4, float current)
 
 }
 
+/*
+* Metodo que permite frenar todos los motores
+*/
 void Controller::frenarMotor(){
 
 	vector<char> i = getArrayFromFloat(STOP_CURRENT);
