@@ -13,8 +13,8 @@
 
 int main(){
 
-	const int screenWidth = 350;
-	const int screenHeight = 200;
+	const int screenWidth = 600;
+	const int screenHeight = 400;
 	
 	InitWindow (screenWidth, screenHeight, "EDA PARK");
 	

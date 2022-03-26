@@ -84,6 +84,8 @@ private:
 	* https://stackoverflow.com/questions/6417438/c-convert-vectorchar-to-double
 	*/
 	std::vector<char> getArrayFromFloat(float payload);
+
+	void DrawTable();
 };
 
 #endif // !CONTROLLER_H

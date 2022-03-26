@@ -33,6 +33,7 @@ Controller::Controller() {
 	}
 
 	bool isLEDOn = false;
+	timeSinceLast = 0;
 }
 
 /*
@@ -77,18 +78,44 @@ std::vector<char> Controller::getArrayFromFloat(float payload) {
 void Controller::updateController() {
 
 	vector<MQTTMessage> mensajes = cliente->getMessages();
-	
-	for (int i = 0; i < mensajes.size(); i++)
-	{
-		char* msj = const_cast<char*>(mensajes[i].topic.c_str());
-		string floatpayload = to_string(getFloatFromArray(mensajes[i].payload));
-		char* msjpayload = (char*)(floatpayload.c_str());
+	DrawTable();
+	DrawText("ROBOT1 CONTROL PANEL", 80, 0, 35, RED);
 
-		DrawText("ROBOT1 CONTROL PANEL", 0, 0, 24, RED);
-		DrawText(msj, 0, 30 + i*14, 14, WHITE);
-		DrawText(msjpayload, 250, 30 + i*14, 14, WHITE);
-	}
-	
+		for (int i = 0; i < mensajes.size(); i++)
+		{
+			char* msj = const_cast<char*>(mensajes[i].topic.c_str());
+			string floatpayload = to_string(getFloatFromArray(mensajes[i].payload));
+			char* msjpayload = (char*)(floatpayload.c_str());
+			// /* sacar las // para borrar los datos en forma de tabla
+			
+			if (mensajes[i].topic.find("1/voltage"))
+				DrawText(msjpayload, 125 + i * 5000, 125 + i * 5000, 20, WHITE);
+			if (mensajes[i].topic.find("2/voltage"))
+				DrawText(msjpayload, 125 + i * 5000, 185 + i * 5000, 20, WHITE);
+			if (mensajes[i].topic.find("3/voltage"))
+				DrawText(msjpayload, 125 + i * 5000, 245 + i * 5000, 20, WHITE);
+			if (mensajes[i].topic.find("4/voltage"))
+				DrawText(msjpayload, 125 + i * 5000, 305 + i * 5000, 20, WHITE);
+			if (mensajes[i].topic.find("1/current"))
+				DrawText(msjpayload, 270 + i * 5000, 125 + i * 5000, 20, WHITE);
+			if (mensajes[i].topic.find("2/current"))
+				DrawText(msjpayload, 270 + i * 5000, 185 + i * 5000, 20, WHITE);
+			if (mensajes[i].topic.find("3/current"))
+				DrawText(msjpayload, 270 + i * 5000, 245 + i * 5000, 20, WHITE);
+			if (mensajes[i].topic.find("4/current"))
+				DrawText(msjpayload, 270 + i * 5000, 305 + i * 5000, 20, WHITE);
+			if (mensajes[i].topic.find("1/temperature"))
+				DrawText(msjpayload, 420 + i * 5000, 125 + i * 5000, 20, WHITE);
+			if (mensajes[i].topic.find("2/temperature"))
+				DrawText(msjpayload, 420 + i * 5000, 185 + i * 5000, 20, WHITE);
+			if (mensajes[i].topic.find("3/temperature"))
+				DrawText(msjpayload, 420 + i * 5000, 245 + i * 5000, 20, WHITE);
+			if (mensajes[i].topic.find("4/temperature"))
+				DrawText(msjpayload, 420+i*5000, 305+i*5000, 20, WHITE); // */
+			//DrawText(msj, 0, 30 + i*14, 14, WHITE);
+			//DrawText(msjpayload, 250+3*i, 30 + i*12, 14, WHITE);
+		}
+
 	//para joystick usaria las funciones IsGamepadbuttondown en vez 
 	if (IsKeyDown(KEY_UP))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_LEFT_FACE_UP)
 	{
@@ -208,4 +235,23 @@ void Controller::frenarMotor(){
 	cliente->publish("robot1/motor" + to_string(2) + "/current/set", i);
 	cliente->publish("robot1/motor" + to_string(3) + "/current/set", i);
 	cliente->publish("robot1/motor" + to_string(4) + "/current/set", i);
+}
+
+void Controller::DrawTable() {
+	DrawLine(40, 100, 540, 100, WHITE);
+	DrawLine(40, 160, 540, 160, WHITE);
+	DrawLine(40, 220, 540, 220, WHITE);
+	DrawLine(40, 280, 540, 280, WHITE);
+	DrawLine(95, 40, 95, 340, WHITE);
+	DrawLine(245, 40, 245, 340, WHITE);
+	DrawLine(395, 40, 395, 340, WHITE);
+
+	DrawText("Nro", 40, 65, 25, WHITE);
+	DrawText("1", 55, 125, 25, WHITE);
+	DrawText("2", 55, 185, 25, WHITE);
+	DrawText("3", 55, 245, 25, WHITE);
+	DrawText("4", 55, 305, 25, WHITE);
+	DrawText("Voltaje", 125, 65, 25, WHITE);
+	DrawText("Corriente", 260, 65, 25, WHITE);
+	DrawText("Temperatura", 400, 65, 25, WHITE);
 }
