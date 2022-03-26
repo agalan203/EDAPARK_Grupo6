@@ -85,7 +85,10 @@ private:
 	*/
 	std::vector<char> getArrayFromFloat(float payload);
 
-	void DrawTable();
+	/*
+	* Metodo que permite dibujar la tabla
+	*/
+	void DrawTable (void);
 };
 
 #endif // !CONTROLLER_H

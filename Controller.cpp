@@ -85,7 +85,6 @@ void Controller::updateController() {
 			char* msj = const_cast<char*>(mensajes[i].topic.c_str());
 			string floatpayload = to_string(getFloatFromArray(mensajes[i].payload));
 			char* msjpayload = (char*)(floatpayload.c_str());
-			// /* sacar las // para borrar los datos en forma de tabla
 			
 			if (mensajes[i].topic.find("1/voltage"))
 				DrawText(msjpayload, 125 + i * 5000, 125 + i * 5000, 20, WHITE);
@@ -110,9 +109,7 @@ void Controller::updateController() {
 			if (mensajes[i].topic.find("3/temperature"))
 				DrawText(msjpayload, 420 + i * 5000, 245 + i * 5000, 20, WHITE);
 			if (mensajes[i].topic.find("4/temperature"))
-				DrawText(msjpayload, 420+i*5000, 305+i*5000, 20, WHITE); // */
-			//DrawText(msj, 0, 30 + i*14, 14, WHITE);
-			//DrawText(msjpayload, 250+3*i, 30 + i*12, 14, WHITE);
+				DrawText(msjpayload, 420+i*5000, 305+i*5000, 20, WHITE);
 		}
 
 	//para joystick usaria las funciones IsGamepadbuttondown en vez 
@@ -236,6 +233,9 @@ void Controller::frenarMotor(){
 	cliente->publish("robot1/motor" + to_string(4) + "/current/set", i);
 }
 
+/*
+* Metodo que permite dibujar la tabla
+*/
 void Controller::DrawTable() {
 	DrawLine(40, 100, 540, 100, WHITE);
 	DrawLine(40, 160, 540, 160, WHITE);
@@ -250,7 +250,7 @@ void Controller::DrawTable() {
 	DrawText("2", 55, 185, 25, WHITE);
 	DrawText("3", 55, 245, 25, WHITE);
 	DrawText("4", 55, 305, 25, WHITE);
-	DrawText("Voltaje", 125, 65, 25, WHITE);
-	DrawText("Corriente", 260, 65, 25, WHITE);
-	DrawText("Temperatura", 400, 65, 25, WHITE);
+	DrawText("Voltage", 125, 65, 25, WHITE);
+	DrawText("Current", 260, 65, 25, WHITE);
+	DrawText("Temperature", 400, 65, 25, WHITE);
 }
