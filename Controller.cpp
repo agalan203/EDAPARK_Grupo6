@@ -33,7 +33,6 @@ Controller::Controller() {
 	}
 
 	bool isLEDOn = false;
-	timeSinceLast = 0;
 }
 
 /*
