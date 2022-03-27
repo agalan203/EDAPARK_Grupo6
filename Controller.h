@@ -48,17 +48,15 @@ private:
 	bool isLEDOn;
 
 	/*
-	* Metodo que permite mover el robot hacia los costados
-	*/
-	void moveRobotside(float current);
-	/*
-	* Metodo que permite mover adelante-atras el robot
-	*/
-	void moveRobotfront(float current);
-	/*
 	* Metodo que permite girar al robot
 	*/
 	void turnRobot(void);
+	/*
+	* Metodo que permite mover el robot
+	* param situationt: 1 si es Left-right, 0 si es Up-down
+	* param current: positiva si es arriba-derecha, negativa si es abajo-izquierda
+	*/
+	void moveRobot(float current, bool situation);
 
 	/*
 	* Metodos que actualizan la corriente en los motores del robot
@@ -66,13 +64,6 @@ private:
 	* param current: la corriente que se le quiere dar al motor
 	*/
 	void actualizarMotor (int n1, float current);
-	void actualizarMotor (int n1, int n2, float current);
-	void actualizarMotor (int n1, int n2, int n3, int n4, float current);
-
-	/*
-	* Metodo que permite frenar todos los motores
-	*/
-	void frenarMotor (void);
 
 	/*
 	* Metodo que permite transformar un vector de char a un float

@@ -112,38 +112,38 @@ void Controller::updateController() {
 				DrawText(msjpayload, 420+i*5000, 305+i*5000, 20, WHITE);
 		}
 
-	//para joystick usaria las funciones IsGamepadbuttondown en vez 
+	//para gamepad usaria las funciones IsGamepadbuttondown en vez 
 	if (IsKeyDown(KEY_UP))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_LEFT_FACE_UP)
 	{
-		moveRobotfront(MOVE_CURRENT);	
+		moveRobot(MOVE_CURRENT, 0);	
 	}
 	if (IsKeyReleased(KEY_UP))	//IsGamepadButtonUp(gamepad, GAMEPAD_BUTTON_LEFT_FACE_UP)
 	{
-		frenarMotor();
+		moveRobot(STOP_CURRENT, 0);
 	}
 	if (IsKeyDown(KEY_DOWN))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_LEFT_FACE_DOWN)
 	{
-		moveRobotfront(-MOVE_CURRENT);	
+		moveRobot(-MOVE_CURRENT, 0);	
 	}
 	if (IsKeyReleased(KEY_DOWN))	//IsGamepadButtonUp(gamepad, GAMEPAD_BUTTON_LEFT_FACE_DOWN)
 	{
-		frenarMotor();
+		moveRobot(STOP_CURRENT, 0);
 	}
 	if (IsKeyDown(KEY_RIGHT))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)
 	{
-		moveRobotside(-TURN_CURRENT);
+		moveRobot(MOVE_CURRENT, 1);
 	}
 	if (IsKeyReleased(KEY_RIGHT))	//IsGamepadButtonUp(gamepad, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)
 	{
-		frenarMotor();
+		moveRobot(STOP_CURRENT, 0);
 	}
 	if (IsKeyDown(KEY_LEFT))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_LEFT_FACE_LEFT)
 	{
-		moveRobotside(TURN_CURRENT);
+		moveRobot(-MOVE_CURRENT, 1);
 	}
 	if (IsKeyReleased(KEY_LEFT))	//IsGamepadButtonUp(gamepad, GAMEPAD_BUTTON_LEFT_FACE_LEFT)
 	{
-		frenarMotor();
+		moveRobot(STOP_CURRENT, 0);
 	}
 	if (IsKeyDown(KEY_SPACE))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_RIGHT_TRIGGER_1)
 	{
@@ -151,7 +151,7 @@ void Controller::updateController() {
 	}
 	if (IsKeyReleased(KEY_SPACE))	//IsGamepadButtonUp(gamepad, GAMEPAD_BUTTON_RIGHT_TRIGGER_1)
 	{
-		frenarMotor();
+		moveRobot(STOP_CURRENT, 0);
 	}
 
 	double time = GetTime();
@@ -168,26 +168,24 @@ void Controller::updateController() {
 }	
 
 /*
-* Metodo que permite girar el robot
-*/
-void Controller::moveRobotfront(float current) {
-	actualizarMotor(1, 4, current);
-	actualizarMotor(2, 3, -current);
-}
-
-/*
-* Metodo que permite mover adelante-atras el robot
-*/
-void Controller::moveRobotside(float current) {
-	actualizarMotor(1, 2, current);
-	actualizarMotor(3, 4, -current);
-}
-
-/*
 * Metodo que permite girar al robot
 */
 void Controller::turnRobot(){
-	actualizarMotor(1, 2, -TURN_CURRENT);
+	actualizarMotor(1, -TURN_CURRENT);
+	actualizarMotor(2, -TURN_CURRENT);
+}
+
+/*
+* Metodo que permite mover el robot
+* 1 si es Left-right, 0 si es Up-down
+* current + si es arriba-derecha, - si es abajo-izquierda
+*/
+void Controller::moveRobot(float current, bool situation){
+
+	actualizarMotor(1, situation==true? -current : current );
+	actualizarMotor(2, -current);
+	actualizarMotor(3, situation==true? current : -current );
+	actualizarMotor(4, current);
 
 }
 
@@ -201,36 +199,6 @@ void Controller::actualizarMotor (int n1, float current){
 	vector<char> i = getArrayFromFloat(current);
 	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
 
-}
-
-void Controller::actualizarMotor (int n1, int n2, float current){
-
-	vector<char> i = getArrayFromFloat(current);
-	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
-	cliente->publish("robot1/motor" + to_string(n2) + "/current/set",i);
-
-}
-
-void Controller::actualizarMotor (int n1, int n2, int n3, int n4, float current){
-
-	vector<char> i = getArrayFromFloat(current);
-	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
-	cliente->publish("robot1/motor" + to_string(n2) + "/current/set", i);
-	cliente->publish("robot1/motor" + to_string(n3) + "/current/set", i);
-	cliente->publish("robot1/motor" + to_string(n4) + "/current/set", i);
-
-}
-
-/*
-* Metodo que permite frenar todos los motores
-*/
-void Controller::frenarMotor(){
-
-	vector<char> i = getArrayFromFloat(STOP_CURRENT);
-	cliente->publish("robot1/motor" + to_string(1) + "/current/set", i);
-	cliente->publish("robot1/motor" + to_string(2) + "/current/set", i);
-	cliente->publish("robot1/motor" + to_string(3) + "/current/set", i);
-	cliente->publish("robot1/motor" + to_string(4) + "/current/set", i);
 }
 
 /*
