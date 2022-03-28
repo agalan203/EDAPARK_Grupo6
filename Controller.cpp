@@ -80,6 +80,7 @@ std::vector<char> Controller::getArrayFromFloat(float payload) {
 */
 void Controller::updateController() {
 
+	//Impresion de los mensajes en pantalla
 	vector<MQTTMessage> mensajes = cliente->getMessages();
 	DrawTable();
 	DrawText("ROBOT1 CONTROL PANEL", 80, 0, 35, RED);
@@ -228,49 +229,10 @@ void Controller::updateController() {
 			}
 		}
 
-	//PARTE ADAPTABLE PARA DISTINTOS IMPUTS INTERACTIVOS
-	//para gamepad usaria las funciones IsGamepadbuttondown en vez 
-	if (IsKeyDown(KEY_UP))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_LEFT_FACE_UP)
-	{
-		moveRobot(MOVE_CURRENT, 0);	
-	}
-	if (IsKeyReleased(KEY_UP))	//IsGamepadButtonUp(gamepad, GAMEPAD_BUTTON_LEFT_FACE_UP)
-	{
-		moveRobot(STOP_CURRENT, 0);
-	}
-	if (IsKeyDown(KEY_DOWN))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_LEFT_FACE_DOWN)
-	{
-		moveRobot(-MOVE_CURRENT, 0);	
-	}
-	if (IsKeyReleased(KEY_DOWN))	//IsGamepadButtonUp(gamepad, GAMEPAD_BUTTON_LEFT_FACE_DOWN)
-	{
-		moveRobot(STOP_CURRENT, 0);
-	}
-	if (IsKeyDown(KEY_RIGHT))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)
-	{
-		moveRobot(MOVE_CURRENT, 1);
-	}
-	if (IsKeyReleased(KEY_RIGHT))	//IsGamepadButtonUp(gamepad, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)
-	{
-		moveRobot(STOP_CURRENT, 0);
-	}
-	if (IsKeyDown(KEY_LEFT))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_LEFT_FACE_LEFT)
-	{
-		moveRobot(-MOVE_CURRENT, 1);
-	}
-	if (IsKeyReleased(KEY_LEFT))	//IsGamepadButtonUp(gamepad, GAMEPAD_BUTTON_LEFT_FACE_LEFT)
-	{
-		moveRobot(STOP_CURRENT, 0);
-	}
-	if (IsKeyDown(KEY_SPACE))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_RIGHT_TRIGGER_1)
-	{
-		turnRobot();
-	}
-	if (IsKeyReleased(KEY_SPACE))	//IsGamepadButtonUp(gamepad, GAMEPAD_BUTTON_RIGHT_TRIGGER_1)
-	{
-		moveRobot(STOP_CURRENT, 0);
-	}
+	//Conversion de imput a movimiento del robot
+	moveRobot();
 
+	//Parpadeo de los ojos del robot
 	double time = GetTime();
 	double period = time - (long)time;
 	bool shouldLEDBeOn = (period < 0.1);
@@ -285,29 +247,31 @@ void Controller::updateController() {
 }	
 
 /*
-* Metodo que permite girar al robot
-*/
-void Controller::turnRobot(){
-	actualizarMotor(1, -TURN_CURRENT);
-	actualizarMotor(2, -TURN_CURRENT);
-}
-
-/*
 * Metodo que permite mover el robot
-* param situationt: 1 si es Left-right, 0 si es Up-down
-* param current: positiva si es arriba-derecha, negativa si es abajo-izquierda
 */
-void Controller::moveRobot(float current, bool situation){
+void Controller::moveRobot(void){
 
-	actualizarMotor(1, situation==true? -current : current );
-	actualizarMotor(2, -current);
-	actualizarMotor(3, situation==true? current : -current );
-	actualizarMotor(4, current);
+	//PARTE ADAPTABLE PARA DISTINTOS IMPUTS INTERACTIVOS
+	//para gamepad usaria las funciones IsGamepadbuttondown en vez de IsKeyDown
+
+	int rotate = IsKeyDown(KEY_D) - IsKeyDown(KEY_A);
+	int moveSideways = IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT);
+	int moveForward = IsKeyDown(KEY_UP) - IsKeyDown(KEY_DOWN);
+
+	int multiplicador1 = ((rotate + moveForward - moveSideways) == 0 )? 0 : ((rotate + moveForward - moveSideways) > 0 )? 1 : -1 ;
+	int multiplicador2 = ((rotate - moveForward - moveSideways) == 0 )? 0 : ((rotate - moveForward - moveSideways) > 0 )? 1 : -1 ;
+	int multiplicador3 = ((rotate - moveForward + moveSideways) == 0 )? 0 : ((rotate - moveForward + moveSideways) > 0 )? 1 : -1 ;
+	int multiplicador4 = ((rotate + moveForward + moveSideways) == 0 )? 0 : ((rotate + moveForward + moveSideways) > 0 )? 1 : -1 ;
+
+	actualizarMotor(1, MOVE_CURRENT * multiplicador1);
+	actualizarMotor(2, MOVE_CURRENT * multiplicador2);
+	actualizarMotor(3, MOVE_CURRENT * multiplicador3);
+	actualizarMotor(4, MOVE_CURRENT * multiplicador4);
 
 }
 
 /*
-* Metodos que actualizan la corriente en los motores del robot
+* Metodo que actualiza la corriente en los motores del robot
 * param n: el numero del motor a actualizar
 * param current: la corriente que se le quiere dar al motor
 */

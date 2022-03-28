@@ -17,9 +17,7 @@
 #include <string.h>
 #include <vector>
 
-#define MOVE_CURRENT 6.0F
-#define STOP_CURRENT 0.0F
-#define TURN_CURRENT 0.5F
+#define MOVE_CURRENT 2.0F
 
 /*
 * Clase que permite inicializar y controlar el robot
@@ -50,18 +48,12 @@ private:
 	bool isLEDOn;
 
 	/*
-	* Metodo que permite girar al robot
-	*/
-	void turnRobot(void);
-	/*
 	* Metodo que permite mover el robot
-	* param situationt: 1 si es Left-right, 0 si es Up-down
-	* param current: positiva si es arriba-derecha, negativa si es abajo-izquierda
 	*/
-	void moveRobot(float current, bool situation);
+	void moveRobot(void);
 
 	/*
-	* Metodos que actualizan la corriente en los motores del robot
+	* Metodo que actualiza la corriente en los motores del robot
 	* param n: el numero del motor a actualizar
 	* param current: la corriente que se le quiere dar al motor
 	*/
