@@ -83,33 +83,145 @@ void Controller::updateController() {
 		for (int i = 0; i < mensajes.size(); i++)
 		{
 			char* msj = const_cast<char*>(mensajes[i].topic.c_str());
-			string floatpayload = to_string(getFloatFromArray(mensajes[i].payload));
-			char* msjpayload = (char*)(floatpayload.c_str());
+			float floatpayload = getFloatFromArray(mensajes[i].payload);
+			string stringpayload = to_string(floatpayload);
+			char* msjpayload = (char*)(stringpayload.c_str());
 			
 			if (mensajes[i].topic.find("1/voltage"))
-				DrawText(msjpayload, 125 + i * 5000, 125 + i * 5000, 20, WHITE);
+			{
+				if(floatpayload >= 24.0F || floatpayload <= -24.0F)
+				{
+					DrawText("WARNING", 125 + i * 5000, 125 + i * 5000, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 125 + i * 5000, 125 + i * 5000, 20, WHITE);
+				}
+			}
 			if (mensajes[i].topic.find("2/voltage"))
-				DrawText(msjpayload, 125 + i * 5000, 185 + i * 5000, 20, WHITE);
+			{
+				if(floatpayload >= 24.0F || floatpayload <= -24.0F)
+				{
+					DrawText("WARNING", 125 + i * 5000, 185 + i * 5000, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 125 + i * 5000, 185 + i * 5000, 20, WHITE);
+				}
+			}
 			if (mensajes[i].topic.find("3/voltage"))
-				DrawText(msjpayload, 125 + i * 5000, 245 + i * 5000, 20, WHITE);
+			{
+				if(floatpayload >= 24.0F || floatpayload <= -24.0F)
+				{
+					DrawText("WARNING", 125 + i * 5000, 245 + i * 5000, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 125 + i * 5000, 245 + i * 5000, 20, WHITE);
+				}
+			}
 			if (mensajes[i].topic.find("4/voltage"))
-				DrawText(msjpayload, 125 + i * 5000, 305 + i * 5000, 20, WHITE);
+			{
+				if(floatpayload >= 24.0F || floatpayload <= -24.0F)
+				{
+					DrawText("WARNING", 125 + i * 5000, 305 + i * 5000, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 125 + i * 5000, 305 + i * 5000, 20, WHITE);
+				}
+			}
+
 			if (mensajes[i].topic.find("1/current"))
-				DrawText(msjpayload, 270 + i * 5000, 125 + i * 5000, 20, WHITE);
+			{
+				if(floatpayload >= 10.0F || floatpayload <= -10.0F)
+				{
+					DrawText("WARNING", 270 + i * 5000, 125 + i * 5000, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 270 + i * 5000, 125 + i * 5000, 20, WHITE);
+				}
+			}
+				
 			if (mensajes[i].topic.find("2/current"))
-				DrawText(msjpayload, 270 + i * 5000, 185 + i * 5000, 20, WHITE);
+			{
+				if(floatpayload >= 10.0F || floatpayload <= -10.0F)
+				{
+					DrawText("WARNING", 270 + i * 5000, 185 + i * 5000, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 270 + i * 5000, 185 + i * 5000, 20, WHITE);
+				}
+			}
 			if (mensajes[i].topic.find("3/current"))
-				DrawText(msjpayload, 270 + i * 5000, 245 + i * 5000, 20, WHITE);
+			{
+				if(floatpayload >= 10.0F || floatpayload <= -10.0F)
+				{
+					DrawText("WARNING", 270 + i * 5000, 245 + i * 5000, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 270 + i * 5000, 245 + i * 5000, 20, WHITE);
+				}
+			}
 			if (mensajes[i].topic.find("4/current"))
-				DrawText(msjpayload, 270 + i * 5000, 305 + i * 5000, 20, WHITE);
+			{
+				if(floatpayload >= 10.0F || floatpayload <= -10.0F)
+				{
+					DrawText("WARNING", 270 + i * 5000, 305 + i * 5000, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 270 + i * 5000, 305 + i * 5000, 20, WHITE);
+				}	
+			}
+
 			if (mensajes[i].topic.find("1/temperature"))
-				DrawText(msjpayload, 420 + i * 5000, 125 + i * 5000, 20, WHITE);
+			{
+				if(floatpayload >= 35.0F)
+				{
+					DrawText("WARNING", 420 + i * 5000, 125 + i * 5000, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 420 + i * 5000, 125 + i * 5000, 20, WHITE);
+				}
+			}
 			if (mensajes[i].topic.find("2/temperature"))
-				DrawText(msjpayload, 420 + i * 5000, 185 + i * 5000, 20, WHITE);
+			{
+				if(floatpayload >= 35.0F)
+				{
+					DrawText("WARNING", 420 + i * 5000, 185 + i * 5000, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 420 + i * 5000, 185 + i * 5000, 20, WHITE);
+				}
+			}
 			if (mensajes[i].topic.find("3/temperature"))
-				DrawText(msjpayload, 420 + i * 5000, 245 + i * 5000, 20, WHITE);
+			{
+				if(floatpayload >= 35.0F)
+				{
+					DrawText("WARNING", 420 + i * 5000, 245 + i * 5000, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 420 + i * 5000, 245 + i * 5000, 20, WHITE);
+				}
+			}
 			if (mensajes[i].topic.find("4/temperature"))
-				DrawText(msjpayload, 420+i*5000, 305+i*5000, 20, WHITE);
+			{
+				if(floatpayload >= 35.0F)
+				{
+					DrawText("WARNING", 420 + i * 5000, 305 + i * 5000, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 420 + i * 5000, 305 + i * 5000, 20, WHITE);
+				}
+			}
 		}
 
 	//para gamepad usaria las funciones IsGamepadbuttondown en vez 
