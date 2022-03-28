@@ -294,7 +294,7 @@ void Controller::DrawTable() {
 	DrawLine(245, 40, 245, 340, WHITE);
 	DrawLine(395, 40, 395, 340, WHITE);
 
-	DrawText("Nro", 40, 65, 25, WHITE);
+	DrawText("Nr", 40, 65, 25, WHITE);
 	DrawText("1", 55, 125, 25, WHITE);
 	DrawText("2", 55, 185, 25, WHITE);
 	DrawText("3", 55, 245, 25, WHITE);
@@ -302,4 +302,6 @@ void Controller::DrawTable() {
 	DrawText("Voltage", 125, 65, 25, WHITE);
 	DrawText("Current", 260, 65, 25, WHITE);
 	DrawText("Temperature", 400, 65, 25, WHITE);
+
+	DrawText ("Use arrows to move, [A] or [D] to turn", 50, 375, 14, WHITE);
 }
