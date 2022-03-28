@@ -263,10 +263,18 @@ void Controller::moveRobot(void){
 	int multiplicador3 = ((rotate - moveForward + moveSideways) == 0 )? 0 : ((rotate - moveForward + moveSideways) > 0 )? 1 : -1 ;
 	int multiplicador4 = ((rotate + moveForward + moveSideways) == 0 )? 0 : ((rotate + moveForward + moveSideways) > 0 )? 1 : -1 ;
 
-	actualizarMotor(1, MOVE_CURRENT * multiplicador1);
-	actualizarMotor(2, MOVE_CURRENT * multiplicador2);
-	actualizarMotor(3, MOVE_CURRENT * multiplicador3);
-	actualizarMotor(4, MOVE_CURRENT * multiplicador4);
+	float isrotation = 1.0F;
+
+	//si se trata de una rotacion, utilizo un factor de escala menor
+	if((multiplicador1 == multiplicador2) && (multiplicador1 == multiplicador3) && (multiplicador1 == multiplicador4))
+	{
+		isrotation = 0.01F;
+	}
+
+	actualizarMotor(1, MOVE_CURRENT * multiplicador1 * isrotation);
+	actualizarMotor(2, MOVE_CURRENT * multiplicador2 * isrotation);
+	actualizarMotor(3, MOVE_CURRENT * multiplicador3 * isrotation);
+	actualizarMotor(4, MOVE_CURRENT * multiplicador4 * isrotation);
 
 }
 
