@@ -254,7 +254,7 @@ void Controller::moveRobot(void){
 	//PARTE ADAPTABLE PARA DISTINTOS IMPUTS INTERACTIVOS
 	//para gamepad usaria las funciones IsGamepadbuttondown en vez de IsKeyDown
 
-	int rotate = IsKeyDown(KEY_D) - IsKeyDown(KEY_A);
+	int rotate = IsKeyDown(KEY_A) - IsKeyDown(KEY_D);
 	int moveSideways = IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT);
 	int moveForward = IsKeyDown(KEY_UP) - IsKeyDown(KEY_DOWN);
 
