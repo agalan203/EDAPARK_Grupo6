@@ -50,7 +50,9 @@ Controller::~Controller() {
 
 /*
 * Metodo que permite transformar un vector de char a un float
-* /https://stackoverflow.com/questions/6417438/c-convert-vectorchar-to-double
+* https://stackoverflow.com/questions/6417438/c-convert-vectorchar-to-double
+* param: vector de char con el payload del mensaje
+* return: la conversion a float del vector 
 */
 float Controller::getFloatFromArray(std::vector<char> payload) {
 
@@ -63,6 +65,8 @@ float Controller::getFloatFromArray(std::vector<char> payload) {
 /*
 * Metodo que permite transformar un float a un vector de char, el formato requerido para hacer publish
 * https://stackoverflow.com/questions/6417438/c-convert-vectorchar-to-double
+* param: float para enviar como mensaje
+* return: la conversion a vector char del numero
 */
 std::vector<char> Controller::getArrayFromFloat(float payload) {
 
@@ -224,6 +228,7 @@ void Controller::updateController() {
 			}
 		}
 
+	//PARTE ADAPTABLE PARA DISTINTOS IMPUTS INTERACTIVOS
 	//para gamepad usaria las funciones IsGamepadbuttondown en vez 
 	if (IsKeyDown(KEY_UP))	//IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_LEFT_FACE_UP)
 	{
@@ -289,8 +294,8 @@ void Controller::turnRobot(){
 
 /*
 * Metodo que permite mover el robot
-* 1 si es Left-right, 0 si es Up-down
-* current + si es arriba-derecha, - si es abajo-izquierda
+* param situationt: 1 si es Left-right, 0 si es Up-down
+* param current: positiva si es arriba-derecha, negativa si es abajo-izquierda
 */
 void Controller::moveRobot(float current, bool situation){
 
@@ -306,10 +311,10 @@ void Controller::moveRobot(float current, bool situation){
 * param n: el numero del motor a actualizar
 * param current: la corriente que se le quiere dar al motor
 */
-void Controller::actualizarMotor (int n1, float current){
+void Controller::actualizarMotor (int n, float current){
 
 	vector<char> i = getArrayFromFloat(current);
-	cliente->publish("robot1/motor" + to_string(n1) + "/current/set", i);
+	cliente->publish("robot1/motor" + to_string(n) + "/current/set", i);
 
 }
 

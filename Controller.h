@@ -44,7 +44,9 @@ public:
 	MQTTClient* cliente;	
 	
 private:
-
+	/*
+	* Control para el parpadeo de los ojos del robot
+	*/
 	bool isLEDOn;
 
 	/*
@@ -63,16 +65,20 @@ private:
 	* param n: el numero del motor a actualizar
 	* param current: la corriente que se le quiere dar al motor
 	*/
-	void actualizarMotor (int n1, float current);
+	void actualizarMotor (int n, float current);
 
 	/*
 	* Metodo que permite transformar un vector de char a un float
 	* https://stackoverflow.com/questions/6417438/c-convert-vectorchar-to-double
+	* param: vector de char con el payload del mensaje
+	* return: la conversion a float del vector 
 	*/
 	float getFloatFromArray (std::vector<char> payload);
 	/*
 	* Metodo que permite transformar un float a un vector de char, el formato requerido para hacer publish
 	* https://stackoverflow.com/questions/6417438/c-convert-vectorchar-to-double
+	* param: float para enviar como mensaje
+	* return: la conversion a vector char del numero
 	*/
 	std::vector<char> getArrayFromFloat(float payload);
 

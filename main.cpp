@@ -9,7 +9,6 @@
  */
  
 #include "Controller.h"
-#include "raylib.h"
 
 int main(){
 
