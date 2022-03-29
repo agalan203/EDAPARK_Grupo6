@@ -20,7 +20,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     add_link_options(-fsanitize=undefined)
 endif()
 
-add_executable(main main.cpp MQTTClient.cpp "Controller.cpp" "Controller.h")
+add_executable(main main.cpp MQTTClient.cpp Controller.cpp)
 
 # Packages
 find_package(raylib CONFIG REQUIRED)

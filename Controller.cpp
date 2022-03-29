@@ -6,7 +6,8 @@
  * Santiago Michelotti y Albertina Galan
  *
  * Clases y metodos para el control del robot
- * Disclaimer: no tenemos un gamepad asi que no pudimos probar si funciona, pero se incluyeron las funciones
+ * Disclaimer: no tenemos un gamepad asi que no pudimos probar si funciona, 
+ * pero se incluyeron las funciones
  */
 #include "Controller.h"
 
@@ -17,7 +18,6 @@ using namespace std;
  */
 Controller::Controller()
 {
-
 	cliente = new MQTTClient("controller");
 
 	if (!(cliente->connect("127.0.0.1", 1883, "user", "vdivEMMN3SQWX2Ez")))
@@ -64,21 +64,19 @@ Controller::~Controller()
  */
 float Controller::getFloatFromArray(std::vector<char> payload)
 {
-
 	float convert = 0.0;
 	memcpy(&convert, &payload[0], std::min(payload.size(), sizeof(float)));
 	return convert;
 }
 
 /*
- * Metodo que permite transformar un float a un vector de char, el formato requerido para hacer publish
+ * Metodo que permite transformar un float a un vector de char, el formato requerido para publish
  * https://stackoverflow.com/questions/6417438/c-convert-vectorchar-to-double
  * param: float para enviar como mensaje
  * return: la conversion a vector char del numero
  */
 std::vector<char> Controller::getArrayFromFloat(float payload)
 {
-
 	vector<char> data(sizeof(float));
 	memcpy(data.data(), &payload, sizeof(float));
 	return data;
@@ -268,17 +266,25 @@ bool Controller::moveRobot(void)
 	int rotate = (IsKeyDown(KEY_A) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_1)) 
 				- (IsKeyDown(KEY_D) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_1));
 
-	int moveSideways = (IsKeyDown(KEY_RIGHT) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) 
-						- (IsKeyDown(KEY_LEFT) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT));
+	int moveSideways = (IsKeyDown(KEY_RIGHT) || 
+						IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) 
+						- (IsKeyDown(KEY_LEFT) || 
+						IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT));
 
-	int moveForward = (IsKeyDown(KEY_UP) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_UP)) 
-						- (IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_DOWN));
+	int moveForward = (IsKeyDown(KEY_UP) || 
+						IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_UP)) 
+						- (IsKeyDown(KEY_DOWN) || 
+						IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_DOWN));
 
-	// En la suma los resultados pueden ser distintos de 1, 0 o -1, pero no queremos aumentar la corriente en los motores
-	int multiplicador1 = ((rotate + moveForward - moveSideways) == 0) ? 0 : ((rotate + moveForward - moveSideways) > 0) ? 1: -1;
-	int multiplicador2 = ((rotate - moveForward - moveSideways) == 0) ? 0 : ((rotate - moveForward - moveSideways) > 0) ? 1: -1;
-	int multiplicador3 = ((rotate - moveForward + moveSideways) == 0) ? 0 : ((rotate - moveForward + moveSideways) > 0) ? 1: -1;
-	int multiplicador4 = ((rotate + moveForward + moveSideways) == 0) ? 0 : ((rotate + moveForward + moveSideways) > 0) ? 1: -1;
+	// Las sumas pueden ser distintos de 1, 0 o -1. Para no aumentar la corriente en los motores
+	int multiplicador1 = ((rotate + moveForward - moveSideways) == 0) ? 0 :
+						 ((rotate + moveForward - moveSideways) > 0) ? 1: -1;
+	int multiplicador2 = ((rotate - moveForward - moveSideways) == 0) ? 0 :
+						 ((rotate - moveForward - moveSideways) > 0) ? 1: -1;
+	int multiplicador3 = ((rotate - moveForward + moveSideways) == 0) ? 0 :
+						 ((rotate - moveForward + moveSideways) > 0) ? 1: -1;
+	int multiplicador4 = ((rotate + moveForward + moveSideways) == 0) ? 0 :
+						 ((rotate + moveForward + moveSideways) > 0) ? 1: -1;
 
 	// si se trata de una rotacion, utilizo un factor de escala menor
 	float isrotation = (rotate == 0) ? 1.0F : 0.01F;

@@ -70,7 +70,7 @@ private:
 	 */
 	float getFloatFromArray(std::vector<char> payload);
 	/*
-	 * Metodo que permite transformar un float a un vector de char, el formato requerido para hacer publish
+	 * Metodo que permite transformar un float a un vector de char, formato requerido para publish
 	 * https://stackoverflow.com/questions/6417438/c-convert-vectorchar-to-double
 	 * param: float para enviar como mensaje
 	 * return: la conversion a vector char del numero
