@@ -6,6 +6,7 @@
  * Santiago Michelotti y Albertina Galan
  *
  * Clases y metodos para el control del robot
+ * Disclaimer: no tenemos un gamepad asi que no pudimos probar si funciona, pero se incluyeron las funciones
  */
 #include "Controller.h"
 
@@ -24,7 +25,12 @@ Controller::Controller()
 		cout << "No se logro establecer conexion" << endl;
 	}
 
-	// para utilizar un gamepad/joystick, aca pondria llamadas a IsGamepadAvailable(int gamepad) y GetGamepadName(int gamepad);
+	// para utilizar un gamepad/joystick
+	if (IsGamepadAvailable(0))
+	{
+		DrawText("Gamepad Connected: use arrows to move, triggers to turn", 50, 385, 14, WHITE);
+		GetGamepadName(0);
+	}
 
 	for (int i = 1; i < 5; i++)
 	{
@@ -256,13 +262,13 @@ void Controller::updateController()
 void Controller::moveRobot(void)
 {
 
-	// PARTE ADAPTABLE PARA DISTINTOS IMPUTS INTERACTIVOS
-	// para gamepad usaria las funciones IsGamepadbuttondown en vez de IsKeyDown
+	int rotate = (IsKeyDown(KEY_A) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_1)) - (IsKeyDown(KEY_D) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_1));
 
-	int rotate = IsKeyDown(KEY_A) - IsKeyDown(KEY_D);
-	int moveSideways = IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT);
-	int moveForward = IsKeyDown(KEY_UP) - IsKeyDown(KEY_DOWN);
+	int moveSideways = (IsKeyDown(KEY_RIGHT) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) - (IsKeyDown(KEY_LEFT) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT));
 
+	int moveForward = (IsKeyDown(KEY_UP) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_UP)) - (IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_DOWN));
+
+	// En la suma los resultados pueden ser distintos de 1, 0 o -1, pero no queremos aumentar la corriente en los motores
 	int multiplicador1 = ((rotate + moveForward - moveSideways) == 0) ? 0 : ((rotate + moveForward - moveSideways) > 0) ? 1
 																														: -1;
 	int multiplicador2 = ((rotate - moveForward - moveSideways) == 0) ? 0 : ((rotate - moveForward - moveSideways) > 0) ? 1
@@ -275,7 +281,7 @@ void Controller::moveRobot(void)
 	float isrotation = 1.0F;
 
 	// si se trata de una rotacion, utilizo un factor de escala menor
-	if ((multiplicador1 == multiplicador2) && (multiplicador1 == multiplicador3) && (multiplicador1 == multiplicador4))
+	if (rotate)
 	{
 		isrotation = 0.01F;
 	}
