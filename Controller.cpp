@@ -262,29 +262,23 @@ void Controller::updateController()
 void Controller::moveRobot(void)
 {
 
-	int rotate = (IsKeyDown(KEY_A) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_1)) - (IsKeyDown(KEY_D) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_1));
+	int rotate = (IsKeyDown(KEY_A) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_1)) 
+				- (IsKeyDown(KEY_D) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_1));
 
-	int moveSideways = (IsKeyDown(KEY_RIGHT) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) - (IsKeyDown(KEY_LEFT) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT));
+	int moveSideways = (IsKeyDown(KEY_RIGHT) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) 
+						- (IsKeyDown(KEY_LEFT) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT));
 
-	int moveForward = (IsKeyDown(KEY_UP) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_UP)) - (IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_DOWN));
+	int moveForward = (IsKeyDown(KEY_UP) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_UP)) 
+						- (IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_DOWN));
 
 	// En la suma los resultados pueden ser distintos de 1, 0 o -1, pero no queremos aumentar la corriente en los motores
-	int multiplicador1 = ((rotate + moveForward - moveSideways) == 0) ? 0 : ((rotate + moveForward - moveSideways) > 0) ? 1
-																														: -1;
-	int multiplicador2 = ((rotate - moveForward - moveSideways) == 0) ? 0 : ((rotate - moveForward - moveSideways) > 0) ? 1
-																														: -1;
-	int multiplicador3 = ((rotate - moveForward + moveSideways) == 0) ? 0 : ((rotate - moveForward + moveSideways) > 0) ? 1
-																														: -1;
-	int multiplicador4 = ((rotate + moveForward + moveSideways) == 0) ? 0 : ((rotate + moveForward + moveSideways) > 0) ? 1
-																														: -1;
-
-	float isrotation = 1.0F;
+	int multiplicador1 = ((rotate + moveForward - moveSideways) == 0) ? 0 : ((rotate + moveForward - moveSideways) > 0) ? 1: -1;
+	int multiplicador2 = ((rotate - moveForward - moveSideways) == 0) ? 0 : ((rotate - moveForward - moveSideways) > 0) ? 1: -1;
+	int multiplicador3 = ((rotate - moveForward + moveSideways) == 0) ? 0 : ((rotate - moveForward + moveSideways) > 0) ? 1: -1;
+	int multiplicador4 = ((rotate + moveForward + moveSideways) == 0) ? 0 : ((rotate + moveForward + moveSideways) > 0) ? 1: -1;
 
 	// si se trata de una rotacion, utilizo un factor de escala menor
-	if (rotate)
-	{
-		isrotation = 0.01F;
-	}
+	float isrotation = (rotate == 0) ? 1.0F : 0.01F;
 
 	actualizarMotor(1, MOVE_CURRENT * multiplicador1 * isrotation);
 	actualizarMotor(2, MOVE_CURRENT * multiplicador2 * isrotation);
