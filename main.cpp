@@ -7,17 +7,18 @@
  *
  * Main module
  */
- 
+
 #include "Controller.h"
 
-int main(){
+int main()
+{
 
 	const int screenWidth = 600;
 	const int screenHeight = 400;
-	
-	InitWindow (screenWidth, screenHeight, "EDA PARK");
-	
-    Controller controlador;
+
+	InitWindow(screenWidth, screenHeight, "EDA PARK");
+
+	Controller controlador;
 
 	SetTargetFPS(5);
 
@@ -29,6 +30,6 @@ int main(){
 		EndDrawing();
 	}
 	CloseWindow();
-	
-    return 0;
+
+	return 0;
 }
