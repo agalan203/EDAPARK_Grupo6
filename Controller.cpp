@@ -86,10 +86,10 @@ std::vector<char> Controller::getArrayFromFloat(float payload)
 
 /*
  * Metodo que actualiza el estado del robot e interpreta los comandos de control
+ * return: si se pudo realizar la actualizacion 
  */
-void Controller::updateController()
+bool Controller::updateController()
 {
-
 	// Impresion de los mensajes en pantalla
 	vector<MQTTMessage> mensajes = cliente->getMessages();
 	drawTable();
@@ -240,7 +240,7 @@ void Controller::updateController()
 	}
 
 	// Conversion de imput a movimiento del robot
-	moveRobot();
+	bool success = moveRobot();
 
 	// Parpadeo de los ojos del robot
 	double time = GetTime();
@@ -254,14 +254,17 @@ void Controller::updateController()
 		cliente->publish("robot1/display/rightEye/set", i);
 		isLEDOn = shouldLEDBeOn;
 	}
+
+	return success;
 }
 
 /*
  * Metodo que permite mover el robot
+ * return: si se pudo mover el robot
  */
-void Controller::moveRobot(void)
+bool Controller::moveRobot(void)
 {
-
+	//Incluye para gamepad pero no lo pudimos probar pues no tenemos gamepad. Deberia funcionar
 	int rotate = (IsKeyDown(KEY_A) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_1)) 
 				- (IsKeyDown(KEY_D) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_1));
 
@@ -280,22 +283,35 @@ void Controller::moveRobot(void)
 	// si se trata de una rotacion, utilizo un factor de escala menor
 	float isrotation = (rotate == 0) ? 1.0F : 0.01F;
 
-	actualizarMotor(1, MOVE_CURRENT * multiplicador1 * isrotation);
-	actualizarMotor(2, MOVE_CURRENT * multiplicador2 * isrotation);
-	actualizarMotor(3, MOVE_CURRENT * multiplicador3 * isrotation);
-	actualizarMotor(4, MOVE_CURRENT * multiplicador4 * isrotation);
+	bool success[4] = {0, 0, 0, 0};
+	success[0] = actualizarMotor(1, MOVE_CURRENT * multiplicador1 * isrotation);
+	success[1] = actualizarMotor(2, MOVE_CURRENT * multiplicador2 * isrotation);
+	success[2] = actualizarMotor(3, MOVE_CURRENT * multiplicador3 * isrotation);
+	success[3] = actualizarMotor(4, MOVE_CURRENT * multiplicador4 * isrotation);
+
+	bool tasksuccessfull = true;
+	for(int i = 0; i < 4; i++)
+	{
+		if(!success[i])
+		{
+			tasksuccessfull = false;
+		}
+	}
+	return tasksuccessfull;
 }
 
 /*
  * Metodo que actualiza la corriente en los motores del robot
  * param n: el numero del motor a actualizar
  * param current: la corriente que se le quiere dar al motor
+ * return: si se pudo realizar la actualizacion 
  */
-void Controller::actualizarMotor(int n, float current)
+bool Controller::actualizarMotor(int n, float current)
 {
-
 	vector<char> i = getArrayFromFloat(current);
-	cliente->publish("robot1/motor" + to_string(n) + "/current/set", i);
+	bool success = cliente->publish("robot1/motor" + to_string(n) + "/current/set", i);
+	
+	return success;
 }
 
 /*

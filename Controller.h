@@ -36,8 +36,9 @@ public:
 
 	/*
 	 * Metodo que actualiza el estado del robot e interpreta los comandos de control
+	 * return: si se pudo realizar la actualizacion
 	 */
-	void updateController();
+	bool updateController();
 
 	MQTTClient *cliente;
 
@@ -49,15 +50,17 @@ private:
 
 	/*
 	 * Metodo que permite mover el robot
+	 * return: si se pudo mover el robot
 	 */
-	void moveRobot(void);
+	bool moveRobot(void);
 
 	/*
 	 * Metodo que actualiza la corriente en los motores del robot
 	 * param n: el numero del motor a actualizar
 	 * param current: la corriente que se le quiere dar al motor
+	 * return: si se pudo realizar la actualizacion
 	 */
-	void actualizarMotor(int n, float current);
+	bool actualizarMotor(int n, float current);
 
 	/*
 	 * Metodo que permite transformar un vector de char a un float

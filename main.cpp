@@ -26,7 +26,10 @@ int main()
 	{
 		BeginDrawing();
 		ClearBackground(BLACK);
-		controlador.updateController();
+		if(!controlador.updateController())
+		{
+			std::cout << "No se pudo actualizar el estado del robot" << std::endl;
+		}
 		EndDrawing();
 	}
 	CloseWindow();
