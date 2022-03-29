@@ -86,7 +86,7 @@ void Controller::updateController()
 
 	// Impresion de los mensajes en pantalla
 	vector<MQTTMessage> mensajes = cliente->getMessages();
-	DrawTable();
+	drawTable();
 	DrawText("ROBOT1 CONTROL PANEL", 80, 0, 35, RED);
 
 	for (int i = 0; i < mensajes.size(); i++)
@@ -301,7 +301,7 @@ void Controller::actualizarMotor(int n, float current)
 /*
  * Metodo que permite dibujar la tabla
  */
-void Controller::DrawTable()
+void Controller::drawTable()
 {
 	DrawLine(40, 100, 540, 100, WHITE);
 	DrawLine(40, 160, 540, 160, WHITE);

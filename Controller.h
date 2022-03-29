@@ -77,7 +77,7 @@ private:
 	/*
 	 * Metodo que permite dibujar la tabla
 	 */
-	void DrawTable(void);
+	void drawTable(void);
 };
 
 #endif // !CONTROLLER_H
