@@ -283,7 +283,7 @@ bool Controller::moveRobot(void)
 	// si se trata de una rotacion, utilizo un factor de escala menor
 	float isrotation = (rotate == 0) ? 1.0F : 0.01F;
 
-	bool success[4] = {0, 0, 0, 0};
+	bool success[4];
 	success[0] = actualizarMotor(1, MOVE_CURRENT * multiplicador1 * isrotation);
 	success[1] = actualizarMotor(2, MOVE_CURRENT * multiplicador2 * isrotation);
 	success[2] = actualizarMotor(3, MOVE_CURRENT * multiplicador3 * isrotation);
