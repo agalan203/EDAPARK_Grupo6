@@ -207,6 +207,7 @@ void Controller::fillTable()
 	{
 		float floatpayload = getFloatFromVector(msj.payload);
 
+		//find devuelve -1 si no se encontro el texto. Para que no entre al if le sumamos 1.
 		if (1 + msj.topic.find("1/voltage", 0))
 		{
 			drawPayload(floatpayload, 125, 125, 24.0F);

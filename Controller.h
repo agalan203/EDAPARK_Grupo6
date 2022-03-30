@@ -52,7 +52,7 @@ private:
 	 * Metodo que permite mover el robot
 	 * return: si se pudo mover el robot
 	 */
-	bool moveRobot(void);
+	bool moveRobot();
 
 	/*
 	 * Metodo que actualiza la corriente en los motores del robot
@@ -80,12 +80,12 @@ private:
 	/*
 	 * Metodo que permite dibujar la tabla
 	 */
-	void drawTable(void);
+	void drawTable();
 
 	/*
 	 * Metodo que permite llenar la tabla
 	 */
-	void fillTable(void);
+	void fillTable();
 
 	/*
 	 * Metodo que permite escribir el payload en la tabla

@@ -12,45 +12,46 @@
 
 using namespace std;
 
-int main(void)
-{
-    Controller controlador;
-    for (int i = 1; i < 5; i++)
-    {
-        if (controlador.cliente->subscribe("robot1/motor" + to_string(i) + "/voltage"))
-        {
-            cout << "Subscription to volage" + to_string(i) + " succesful" << endl;
-        }
-        else
-        {
-            cout << "Subscription to volage" + to_string(i) + " not succesful" << endl;
-        }
-        if (controlador.cliente->subscribe("robot1/motor" + to_string(i) + "/current"))
-        {
-            cout << "Subscription to current" + to_string(i) + " succesful" << endl;
-        }
-        else
-        {
-            cout << "Subscription to current" + to_string(i) + " not succesful" << endl;
-        }
-    }
-    
-    
-    vector<char> data(sizeof(float));
-    float payload = 2.0F;
-    memcpy(data.data(), &payload, sizeof(float));
+void print(string s)
+{ 
+    cout << endl;
+    cout << s << endl;
+}
 
-    if (controlador.cliente->publish("robot1/motor1/current/set", data))
-    {
-        cout << "Publish succesful" << endl;
-    }
-    
-    controlador.cliente->disconnect();
-    
-     if (!controlador.cliente->isConnected())
-     {
-         cout << "Disconnection Succesful" << endl;
-     }
+int fail()
+{ 
+    cout << "FAIL" << endl << endl;
+    return 1;
+}
+
+int pass()
+{ 
+    cout << "PASS" << endl << endl;
+    return 0;
+}
+
+int main()
+{
+	const int screenWidth = 600;
+	const int screenHeight = 410;
+
+	InitWindow(screenWidth, screenHeight, "EDA PARK");
+
+    print("For tests to work EDAPark must be open");
+
+    Controller controlador;
+
+    print("Controller() is able to establish connection...");
+    if(!controlador.cliente->isConnected())
+        return fail();
+    pass();
+
+    print("updateController() is able to update the state of the robot...");
+    if(!controlador.updateController())
+        return fail();
+    pass();
+
+	CloseWindow();
 
     return 0;
 }
