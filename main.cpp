@@ -20,7 +20,7 @@ int main()
 
 	Controller controlador;
 
-	SetTargetFPS(5);
+	SetTargetFPS(10);
 
 	while (!WindowShouldClose())
 	{

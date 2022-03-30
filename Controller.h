@@ -68,19 +68,33 @@ private:
 	 * param: vector de char con el payload del mensaje
 	 * return: la conversion a float del vector
 	 */
-	float getFloatFromArray(std::vector<char> payload);
+	float getFloatFromVector(std::vector<char> payload);
 	/*
 	 * Metodo que permite transformar un float a un vector de char, formato requerido para publish
 	 * https://stackoverflow.com/questions/6417438/c-convert-vectorchar-to-double
 	 * param: float para enviar como mensaje
 	 * return: la conversion a vector char del numero
 	 */
-	std::vector<char> getArrayFromFloat(float payload);
+	std::vector<char> getVectorFromFloat(float payload);
 
 	/*
 	 * Metodo que permite dibujar la tabla
 	 */
 	void drawTable(void);
+
+	/*
+	 * Metodo que permite llenar la tabla
+	 */
+	void fillTable(void);
+
+	/*
+	 * Metodo que permite escribir el payload en la tabla
+	 * float payload: el valor a escribir en la tabla
+	 * int posx: la posicion en el eje x para el texto
+	 * int posy: la posicion en el eje y para el texto
+	 * int condition: el maximo valor que puede tomar el payload
+	 */
+	void drawPayload(float payload, int posx, int posy, float condition);
 };
 
 #endif // !CONTROLLER_H

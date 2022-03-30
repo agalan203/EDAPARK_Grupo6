@@ -29,7 +29,6 @@ Controller::Controller()
 	if (IsGamepadAvailable(0))
 	{
 		DrawText("Gamepad Connected: use arrows to move, triggers to turn", 50, 385, 14, WHITE);
-		GetGamepadName(0);
 	}
 
 	for (int i = 1; i < 5; i++)
@@ -62,7 +61,7 @@ Controller::~Controller()
  * param: vector de char con el payload del mensaje
  * return: la conversion a float del vector
  */
-float Controller::getFloatFromArray(std::vector<char> payload)
+float Controller::getFloatFromVector(std::vector<char> payload)
 {
 	float convert = 0.0;
 	memcpy(&convert, &payload[0], std::min(payload.size(), sizeof(float)));
@@ -75,7 +74,7 @@ float Controller::getFloatFromArray(std::vector<char> payload)
  * param: float para enviar como mensaje
  * return: la conversion a vector char del numero
  */
-std::vector<char> Controller::getArrayFromFloat(float payload)
+std::vector<char> Controller::getVectorFromFloat(float payload)
 {
 	vector<char> data(sizeof(float));
 	memcpy(data.data(), &payload, sizeof(float));
@@ -89,151 +88,9 @@ std::vector<char> Controller::getArrayFromFloat(float payload)
 bool Controller::updateController()
 {
 	// Impresion de los mensajes en pantalla
-	vector<MQTTMessage> mensajes = cliente->getMessages();
 	drawTable();
 	DrawText("ROBOT1 CONTROL PANEL", 80, 0, 35, RED);
-
-
-		for (auto& msj : mensajes) {
-
-			float floatpayload = getFloatFromArray(msj.payload);
-			string stringpayload = to_string(floatpayload);
-			char* msjpayload = (char*)(stringpayload.c_str());
-
-			if (1 + msj.topic.find("1/voltage", 0))
-			{
-				if (floatpayload >= 24.0F || floatpayload <= -24.0F)
-				{
-					DrawText("WARNING", 125, 125, 20, WHITE);
-				}
-				else
-				{
-					DrawText(msjpayload, 125, 125, 20, WHITE);
-				}
-			}
-			else if (1 + msj.topic.find("2/voltage", 0))
-			{
-				if (floatpayload >= 24.0F || floatpayload <= -24.0F)
-				{
-					DrawText("WARNING", 125, 185, 20, WHITE);
-				}
-				else
-				{
-					DrawText(msjpayload, 125, 185, 20, WHITE);
-				}
-			}
-			else if (1 + msj.topic.find("3/voltage", 0))
-			{
-				if (floatpayload >= 24.0F || floatpayload <= -24.0F)
-				{
-					DrawText("WARNING", 125, 245, 20, WHITE);
-				}
-				else
-				{
-					DrawText(msjpayload, 125, 245, 20, WHITE);
-				}
-			}
-			else if (1 + msj.topic.find("4/voltage", 0))
-			{
-				if (floatpayload >= 24.0F || floatpayload <= -24.0F)
-				{
-					DrawText("WARNING", 125, 305, 20, WHITE);
-				}
-				else
-				{
-					DrawText(msjpayload, 125, 305, 20, WHITE);
-				}
-			}
-			else if (1 + msj.topic.find("1/current", 0))
-			{
-				if (floatpayload >= 10.0F || floatpayload <= -10.0F)
-				{
-					DrawText("WARNING", 270, 125, 20, WHITE);
-				}
-				else
-				{
-					DrawText(msjpayload, 270, 125, 20, WHITE);
-				}
-			}
-			else if (1 + msj.topic.find("2/current", 0))
-			{
-				if (floatpayload >= 10.0F || floatpayload <= -10.0F)
-				{
-					DrawText("WARNING", 270, 185, 20, WHITE);
-				}
-				else
-				{
-					DrawText(msjpayload, 270, 185, 20, WHITE);
-				}
-			}
-			else if (1 + msj.topic.find("3/current", 0))
-			{
-				if (floatpayload >= 10.0F || floatpayload <= -10.0F)
-				{
-					DrawText("WARNING", 270, 245, 20, WHITE);
-				}
-				else
-				{
-					DrawText(msjpayload, 270, 245, 20, WHITE);
-				}
-			}
-			else if (1 + msj.topic.find("4/current", 0))
-			{
-				if (floatpayload >= 10.0F || floatpayload <= -10.0F)
-				{
-					DrawText("WARNING", 270, 305, 20, WHITE);
-				}
-				else
-				{
-					DrawText(msjpayload, 270, 305, 20, WHITE);
-				}
-			}
-			else if (1 + msj.topic.find("1/temperature", 0))
-			{
-				if (floatpayload >= 35.0F)
-				{
-					DrawText("WARNING", 420, 125, 20, WHITE);
-				}
-				else
-				{
-					DrawText(msjpayload, 420, 125, 20, WHITE);
-				}
-			}
-			else if (1 + msj.topic.find("2/temperature", 0))
-			{
-				if (floatpayload >= 35.0F)
-				{
-					DrawText("WARNING", 420, 185, 20, WHITE);
-				}
-				else
-				{
-					DrawText(msjpayload, 420, 185, 20, WHITE);
-				}
-			}
-			else if (1 + msj.topic.find("3/temperature", 0))
-			{
-				if (floatpayload >= 35.0F)
-				{
-					DrawText("WARNING", 420, 245, 20, WHITE);
-				}
-				else
-				{
-					DrawText(msjpayload, 420, 245, 20, WHITE);
-				}
-			}
-			else if (1 + msj.topic.find("4/temperature", 0))
-			{
-				if (floatpayload >= 35.0F)
-				{
-					DrawText("WARNING", 420, 305, 20, WHITE);
-				}
-				else
-				{
-					DrawText(msjpayload, 420, 305, 20, WHITE);
-				}
-			}
-
-		}
+	fillTable();
 	
 	// Conversion de imput a movimiento del robot
 	bool success = moveRobot();
@@ -258,7 +115,7 @@ bool Controller::updateController()
  * Metodo que permite mover el robot
  * return: si se pudo mover el robot
  */
-bool Controller::moveRobot(void)
+bool Controller::moveRobot()
 {
 	//Incluye para gamepad pero no lo pudimos probar pues no tenemos gamepad. Deberia funcionar
 	int rotate = (IsKeyDown(KEY_A) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_1))
@@ -293,15 +150,14 @@ bool Controller::moveRobot(void)
 	success[2] = actualizarMotor(3, MOVE_CURRENT * multiplicador3 * isrotation);
 	success[3] = actualizarMotor(4, MOVE_CURRENT * multiplicador4 * isrotation);
 
-	bool tasksuccessfull = true;
 	for (int i = 0; i < 4; i++)
 	{
 		if (!success[i])
 		{
-			tasksuccessfull = false;
+			return false;
 		}
 	}
-	return tasksuccessfull;
+	return true;	
 }
 
 /*
@@ -312,7 +168,7 @@ bool Controller::moveRobot(void)
  */
 bool Controller::actualizarMotor(int n, float current)
 {
-	vector<char> i = getArrayFromFloat(current);
+	vector<char> i = getVectorFromFloat(current);
 	bool success = cliente->publish("robot1/motor" + to_string(n) + "/current/set", i);
 
 	return success;
@@ -341,4 +197,78 @@ void Controller::drawTable()
 	DrawText("Temperature", 400, 65, 25, WHITE);
 
 	DrawText("Use arrows to move, [A] or [D] to turn", 50, 375, 14, WHITE);
+}
+
+void Controller::fillTable()
+{
+	vector<MQTTMessage> mensajes = cliente->getMessages();
+
+	for (auto& msj : mensajes) 
+	{
+		float floatpayload = getFloatFromVector(msj.payload);
+
+		if (1 + msj.topic.find("1/voltage", 0))
+		{
+			drawPayload(floatpayload, 125, 125, 24.0F);
+		}
+		else if (1 + msj.topic.find("2/voltage", 0))
+		{
+			drawPayload(floatpayload, 125, 185, 24.0F);
+		}
+		else if (1 + msj.topic.find("3/voltage", 0))
+		{
+			drawPayload(floatpayload, 125, 245, 24.0F);
+		}
+		else if (1 + msj.topic.find("4/voltage", 0))
+		{
+			drawPayload(floatpayload, 125, 305, 24.0F);
+		}
+		else if (1 + msj.topic.find("1/current", 0))
+		{
+			drawPayload(floatpayload, 270, 125, 10.0F);
+		}
+		else if (1 + msj.topic.find("2/current", 0))
+		{
+			drawPayload(floatpayload, 270, 185, 10.0F);
+		}
+		else if (1 + msj.topic.find("3/current", 0))
+		{
+			drawPayload(floatpayload, 270, 245, 10.0F);
+		}
+		else if (1 + msj.topic.find("4/current", 0))
+		{
+			drawPayload(floatpayload, 270, 305, 10.0F);
+		}
+		else if (1 + msj.topic.find("1/temperature", 0))
+		{
+			drawPayload(floatpayload, 420, 125, 35.0F);
+		}
+		else if (1 + msj.topic.find("2/temperature", 0))
+		{
+			drawPayload(floatpayload, 420, 185, 35.0F);
+		}
+		else if (1 + msj.topic.find("3/temperature", 0))
+		{
+			drawPayload(floatpayload, 420, 245, 35.0F);
+		}
+		else if (1 + msj.topic.find("4/temperature", 0))
+		{
+			drawPayload(floatpayload, 420, 305, 35.0F);
+		}
+	}
+}
+
+void Controller::drawPayload(float payload, int posx, int posy, float condition)
+{
+	string stringpayload = to_string(payload);
+	char* msjpayload = (char*)(stringpayload.c_str());
+
+	if(payload >= condition || payload <= -condition)
+	{
+		DrawText("WARNING", posx, posy, 20, WHITE);
+	}
+	else
+	{
+		DrawText(msjpayload, posx, posy, 20, WHITE);
+	}
 }
