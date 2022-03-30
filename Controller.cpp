@@ -199,6 +199,9 @@ void Controller::drawTable()
 	DrawText("Use arrows to move, [A] or [D] to turn", 50, 375, 14, WHITE);
 }
 
+/*
+ * Metodo que permite llenar la tabla
+ */
 void Controller::fillTable()
 {
 	vector<MQTTMessage> mensajes = cliente->getMessages();
@@ -262,6 +265,13 @@ void Controller::fillTable()
 	}
 }
 
+/*
+ * Metodo que permite escribir el payload en la tabla
+ * float payload: el valor a escribir en la tabla
+ * int posx: la posicion en el eje x para el texto
+ * int posy: la posicion en el eje y para el texto
+ * float condition: el maximo valor que puede tomar el payload
+ */
 void Controller::drawPayload(float payload, int posx, int posy, float condition)
 {
 	string stringpayload = to_string(payload);

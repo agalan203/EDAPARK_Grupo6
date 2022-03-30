@@ -92,7 +92,7 @@ private:
 	 * float payload: el valor a escribir en la tabla
 	 * int posx: la posicion en el eje x para el texto
 	 * int posy: la posicion en el eje y para el texto
-	 * int condition: el maximo valor que puede tomar el payload
+	 * float condition: el maximo valor que puede tomar el payload
 	 */
 	void drawPayload(float payload, int posx, int posy, float condition);
 };
