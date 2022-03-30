@@ -6,7 +6,7 @@
  * Santiago Michelotti y Albertina Galan
  *
  * Clases y metodos para el control del robot
- * Disclaimer: no tenemos un gamepad asi que no pudimos probar si funciona, 
+ * Disclaimer: no tenemos un gamepad asi que no pudimos probar si funciona,
  * pero se incluyeron las funciones
  */
 #include "Controller.h"
@@ -39,7 +39,7 @@ Controller::Controller()
 		cliente->subscribe("robot1/motor" + to_string(i) + "/temperature");
 	}
 
-	bool isLEDOn = false;
+	isLEDOn = false;
 }
 
 /*
@@ -84,7 +84,7 @@ std::vector<char> Controller::getArrayFromFloat(float payload)
 
 /*
  * Metodo que actualiza el estado del robot e interpreta los comandos de control
- * return: si se pudo realizar la actualizacion 
+ * return: si se pudo realizar la actualizacion
  */
 bool Controller::updateController()
 {
@@ -93,150 +93,148 @@ bool Controller::updateController()
 	drawTable();
 	DrawText("ROBOT1 CONTROL PANEL", 80, 0, 35, RED);
 
-	for (int i = 0; i < mensajes.size(); i++)
-	{
-		char *msj = const_cast<char *>(mensajes[i].topic.c_str());
-		float floatpayload = getFloatFromArray(mensajes[i].payload);
-		string stringpayload = to_string(floatpayload);
-		char *msjpayload = (char *)(stringpayload.c_str());
 
-		if (mensajes[i].topic.find("1/voltage"))
-		{
-			if (floatpayload >= 24.0F || floatpayload <= -24.0F)
-			{
-				DrawText("WARNING", 125 + i * 5000, 125 + i * 5000, 20, WHITE);
-			}
-			else
-			{
-				DrawText(msjpayload, 125 + i * 5000, 125 + i * 5000, 20, WHITE);
-			}
-		}
-		if (mensajes[i].topic.find("2/voltage"))
-		{
-			if (floatpayload >= 24.0F || floatpayload <= -24.0F)
-			{
-				DrawText("WARNING", 125 + i * 5000, 185 + i * 5000, 20, WHITE);
-			}
-			else
-			{
-				DrawText(msjpayload, 125 + i * 5000, 185 + i * 5000, 20, WHITE);
-			}
-		}
-		if (mensajes[i].topic.find("3/voltage"))
-		{
-			if (floatpayload >= 24.0F || floatpayload <= -24.0F)
-			{
-				DrawText("WARNING", 125 + i * 5000, 245 + i * 5000, 20, WHITE);
-			}
-			else
-			{
-				DrawText(msjpayload, 125 + i * 5000, 245 + i * 5000, 20, WHITE);
-			}
-		}
-		if (mensajes[i].topic.find("4/voltage"))
-		{
-			if (floatpayload >= 24.0F || floatpayload <= -24.0F)
-			{
-				DrawText("WARNING", 125 + i * 5000, 305 + i * 5000, 20, WHITE);
-			}
-			else
-			{
-				DrawText(msjpayload, 125 + i * 5000, 305 + i * 5000, 20, WHITE);
-			}
-		}
+		for (auto& msj : mensajes) {
 
-		if (mensajes[i].topic.find("1/current"))
-		{
-			if (floatpayload >= 10.0F || floatpayload <= -10.0F)
-			{
-				DrawText("WARNING", 270 + i * 5000, 125 + i * 5000, 20, WHITE);
-			}
-			else
-			{
-				DrawText(msjpayload, 270 + i * 5000, 125 + i * 5000, 20, WHITE);
-			}
-		}
+			float floatpayload = getFloatFromArray(msj.payload);
+			string stringpayload = to_string(floatpayload);
+			char* msjpayload = (char*)(stringpayload.c_str());
 
-		if (mensajes[i].topic.find("2/current"))
-		{
-			if (floatpayload >= 10.0F || floatpayload <= -10.0F)
+			if (1 + msj.topic.find("1/voltage", 0))
 			{
-				DrawText("WARNING", 270 + i * 5000, 185 + i * 5000, 20, WHITE);
+				if (floatpayload >= 24.0F || floatpayload <= -24.0F)
+				{
+					DrawText("WARNING", 125, 125, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 125, 125, 20, WHITE);
+				}
 			}
-			else
+			else if (1 + msj.topic.find("2/voltage", 0))
 			{
-				DrawText(msjpayload, 270 + i * 5000, 185 + i * 5000, 20, WHITE);
+				if (floatpayload >= 24.0F || floatpayload <= -24.0F)
+				{
+					DrawText("WARNING", 125, 185, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 125, 185, 20, WHITE);
+				}
 			}
-		}
-		if (mensajes[i].topic.find("3/current"))
-		{
-			if (floatpayload >= 10.0F || floatpayload <= -10.0F)
+			else if (1 + msj.topic.find("3/voltage", 0))
 			{
-				DrawText("WARNING", 270 + i * 5000, 245 + i * 5000, 20, WHITE);
+				if (floatpayload >= 24.0F || floatpayload <= -24.0F)
+				{
+					DrawText("WARNING", 125, 245, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 125, 245, 20, WHITE);
+				}
 			}
-			else
+			else if (1 + msj.topic.find("4/voltage", 0))
 			{
-				DrawText(msjpayload, 270 + i * 5000, 245 + i * 5000, 20, WHITE);
+				if (floatpayload >= 24.0F || floatpayload <= -24.0F)
+				{
+					DrawText("WARNING", 125, 305, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 125, 305, 20, WHITE);
+				}
 			}
-		}
-		if (mensajes[i].topic.find("4/current"))
-		{
-			if (floatpayload >= 10.0F || floatpayload <= -10.0F)
+			else if (1 + msj.topic.find("1/current", 0))
 			{
-				DrawText("WARNING", 270 + i * 5000, 305 + i * 5000, 20, WHITE);
+				if (floatpayload >= 10.0F || floatpayload <= -10.0F)
+				{
+					DrawText("WARNING", 270, 125, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 270, 125, 20, WHITE);
+				}
 			}
-			else
+			else if (1 + msj.topic.find("2/current", 0))
 			{
-				DrawText(msjpayload, 270 + i * 5000, 305 + i * 5000, 20, WHITE);
+				if (floatpayload >= 10.0F || floatpayload <= -10.0F)
+				{
+					DrawText("WARNING", 270, 185, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 270, 185, 20, WHITE);
+				}
 			}
-		}
+			else if (1 + msj.topic.find("3/current", 0))
+			{
+				if (floatpayload >= 10.0F || floatpayload <= -10.0F)
+				{
+					DrawText("WARNING", 270, 245, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 270, 245, 20, WHITE);
+				}
+			}
+			else if (1 + msj.topic.find("4/current", 0))
+			{
+				if (floatpayload >= 10.0F || floatpayload <= -10.0F)
+				{
+					DrawText("WARNING", 270, 305, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 270, 305, 20, WHITE);
+				}
+			}
+			else if (1 + msj.topic.find("1/temperature", 0))
+			{
+				if (floatpayload >= 35.0F)
+				{
+					DrawText("WARNING", 420, 125, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 420, 125, 20, WHITE);
+				}
+			}
+			else if (1 + msj.topic.find("2/temperature", 0))
+			{
+				if (floatpayload >= 35.0F)
+				{
+					DrawText("WARNING", 420, 185, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 420, 185, 20, WHITE);
+				}
+			}
+			else if (1 + msj.topic.find("3/temperature", 0))
+			{
+				if (floatpayload >= 35.0F)
+				{
+					DrawText("WARNING", 420, 245, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 420, 245, 20, WHITE);
+				}
+			}
+			else if (1 + msj.topic.find("4/temperature", 0))
+			{
+				if (floatpayload >= 35.0F)
+				{
+					DrawText("WARNING", 420, 305, 20, WHITE);
+				}
+				else
+				{
+					DrawText(msjpayload, 420, 305, 20, WHITE);
+				}
+			}
 
-		if (mensajes[i].topic.find("1/temperature"))
-		{
-			if (floatpayload >= 35.0F)
-			{
-				DrawText("WARNING", 420 + i * 5000, 125 + i * 5000, 20, WHITE);
-			}
-			else
-			{
-				DrawText(msjpayload, 420 + i * 5000, 125 + i * 5000, 20, WHITE);
-			}
 		}
-		if (mensajes[i].topic.find("2/temperature"))
-		{
-			if (floatpayload >= 35.0F)
-			{
-				DrawText("WARNING", 420 + i * 5000, 185 + i * 5000, 20, WHITE);
-			}
-			else
-			{
-				DrawText(msjpayload, 420 + i * 5000, 185 + i * 5000, 20, WHITE);
-			}
-		}
-		if (mensajes[i].topic.find("3/temperature"))
-		{
-			if (floatpayload >= 35.0F)
-			{
-				DrawText("WARNING", 420 + i * 5000, 245 + i * 5000, 20, WHITE);
-			}
-			else
-			{
-				DrawText(msjpayload, 420 + i * 5000, 245 + i * 5000, 20, WHITE);
-			}
-		}
-		if (mensajes[i].topic.find("4/temperature"))
-		{
-			if (floatpayload >= 35.0F)
-			{
-				DrawText("WARNING", 420 + i * 5000, 305 + i * 5000, 20, WHITE);
-			}
-			else
-			{
-				DrawText(msjpayload, 420 + i * 5000, 305 + i * 5000, 20, WHITE);
-			}
-		}
-	}
-
+	
 	// Conversion de imput a movimiento del robot
 	bool success = moveRobot();
 
@@ -247,7 +245,7 @@ bool Controller::updateController()
 	if (isLEDOn != shouldLEDBeOn)
 	{
 		char redColor = shouldLEDBeOn ? 0xff : 0;
-		vector<char> i = {redColor, 0, 0};
+		vector<char> i = { redColor, 0, 0 };
 		cliente->publish("robot1/display/leftEye/set", i);
 		cliente->publish("robot1/display/rightEye/set", i);
 		isLEDOn = shouldLEDBeOn;
@@ -263,28 +261,28 @@ bool Controller::updateController()
 bool Controller::moveRobot(void)
 {
 	//Incluye para gamepad pero no lo pudimos probar pues no tenemos gamepad. Deberia funcionar
-	int rotate = (IsKeyDown(KEY_A) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_1)) 
-				- (IsKeyDown(KEY_D) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_1));
+	int rotate = (IsKeyDown(KEY_A) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_1))
+		- (IsKeyDown(KEY_D) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_1));
 
-	int moveSideways = (IsKeyDown(KEY_RIGHT) || 
-						IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) 
-						- (IsKeyDown(KEY_LEFT) || 
-						IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT));
+	int moveSideways = (IsKeyDown(KEY_RIGHT) ||
+		IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT))
+		- (IsKeyDown(KEY_LEFT) ||
+			IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT));
 
-	int moveForward = (IsKeyDown(KEY_UP) || 
-						IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_UP)) 
-						- (IsKeyDown(KEY_DOWN) || 
-						IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_DOWN));
+	int moveForward = (IsKeyDown(KEY_UP) ||
+		IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_UP))
+		- (IsKeyDown(KEY_DOWN) ||
+			IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_DOWN));
 
 	// Las sumas pueden ser distintos de 1, 0 o -1. Para no aumentar la corriente en los motores
 	int multiplicador1 = ((rotate + moveForward - moveSideways) == 0) ? 0 :
-						 ((rotate + moveForward - moveSideways) > 0) ? 1: -1;
+		((rotate + moveForward - moveSideways) > 0) ? 1 : -1;
 	int multiplicador2 = ((rotate - moveForward - moveSideways) == 0) ? 0 :
-						 ((rotate - moveForward - moveSideways) > 0) ? 1: -1;
+		((rotate - moveForward - moveSideways) > 0) ? 1 : -1;
 	int multiplicador3 = ((rotate - moveForward + moveSideways) == 0) ? 0 :
-						 ((rotate - moveForward + moveSideways) > 0) ? 1: -1;
+		((rotate - moveForward + moveSideways) > 0) ? 1 : -1;
 	int multiplicador4 = ((rotate + moveForward + moveSideways) == 0) ? 0 :
-						 ((rotate + moveForward + moveSideways) > 0) ? 1: -1;
+		((rotate + moveForward + moveSideways) > 0) ? 1 : -1;
 
 	// si se trata de una rotacion, utilizo un factor de escala menor
 	float isrotation = (rotate == 0) ? 1.0F : 0.01F;
@@ -296,9 +294,9 @@ bool Controller::moveRobot(void)
 	success[3] = actualizarMotor(4, MOVE_CURRENT * multiplicador4 * isrotation);
 
 	bool tasksuccessfull = true;
-	for(int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
 	{
-		if(!success[i])
+		if (!success[i])
 		{
 			tasksuccessfull = false;
 		}
@@ -310,13 +308,13 @@ bool Controller::moveRobot(void)
  * Metodo que actualiza la corriente en los motores del robot
  * param n: el numero del motor a actualizar
  * param current: la corriente que se le quiere dar al motor
- * return: si se pudo realizar la actualizacion 
+ * return: si se pudo realizar la actualizacion
  */
 bool Controller::actualizarMotor(int n, float current)
 {
 	vector<char> i = getArrayFromFloat(current);
 	bool success = cliente->publish("robot1/motor" + to_string(n) + "/current/set", i);
-	
+
 	return success;
 }
 
