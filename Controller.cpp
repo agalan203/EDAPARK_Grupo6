@@ -240,6 +240,9 @@ void Controller::fillTable()
 		{
 			drawPayload(floatpayload, 270, 305, 10.0F);
 		}
+		//para las temperaturas, la funcion evaluara como warning que la temperatura sea menor
+		//a -35 grados. Esto no tiene sentido, pues no habra temperaturas negativas
+		//Sin embargo, no vale la pena crear otra funcion solo para la temperatura
 		else if (1 + msj.topic.find("1/temperature", 0))
 		{
 			drawPayload(floatpayload, 420, 125, 35.0F);
